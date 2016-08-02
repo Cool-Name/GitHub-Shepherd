@@ -15,7 +15,7 @@ public class Core {
 
 	// Credentials used to access Github
 	private static CredentialsProvider cp = new UsernamePasswordCredentialsProvider(
-			"HakauB", "Moheofo1");
+			"", "");
 
 	public static String getSearchRoot() {
 		return searchRoot;
