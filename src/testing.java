@@ -19,34 +19,31 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 public class testing {
 
 	public static void main(String[] args) {
-		
+
 		testing t = new testing();
-		
+
 		File file = new File("C:/Users/Hakau/Documents/comp314/Test-Repo");
 		System.out.println("Initial: " + file.listFiles());
-		
-		
+
 		try {
 			t.init();
 			t.testCreate();
 			System.out.println("Create: " + file.listFiles());
-			
-			try{
-			t.testClone();
-			System.out.println("Clone: " + file.listFiles());
-			}
-			catch (Exception e)
-			{
+
+			try {
+				t.testClone();
+				System.out.println("Clone: " + file.listFiles());
+			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Already cloned");
 			}
-			
+
 			t.testAdd();
 			System.out.println("Add " + file.listFiles());
-			
+
 			t.testCommit();
 			System.out.println("Commit " + file.listFiles());
-			
+
 			t.testPush();
 			System.out.println("Push " + file.listFiles());
 
@@ -55,65 +52,68 @@ public class testing {
 
 			t.testPull();
 			System.out.println("Pull " + file.listFiles());
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	private String localPath, remotePath;
-    private Repository localRepo;
-    private Git git;
-    CredentialsProvider cp = new UsernamePasswordCredentialsProvider("GIT USER", "GIT PASS");
+	private Repository localRepo;
+	private Git git;
 
+	// NOTE : CHANGE THESE
+	CredentialsProvider cp = new UsernamePasswordCredentialsProvider(
+			"GIT USER", "GIT PASS");
 
-    public void init() throws IOException {
-        localPath = "C:/Users/Hakau/Documents/Comp314/Test-Repo";
-        remotePath = "https://github.com/Cool-Name/Test-Repo";
-        localRepo = new FileRepository(localPath + "/.git");
-        git = new Git(localRepo);
-        
-    }
+	public void init() throws IOException {
 
-    public void testCreate() throws IOException {
-        //Repository newRepo = new FileRepository(localPath + ".git");
-    	Repository existingRepo = new FileRepositoryBuilder()
-        .setGitDir(new File(localPath + ".git"))
-        .build();
-        //newRepo.create();
-    }
+		// NOTE : CHANGE THESE
+		localPath = "C:/Users/Hakau/Documents/Comp314/Test-Repo";
+		remotePath = "https://github.com/Cool-Name/Test-Repo";
+		localRepo = new FileRepository(localPath + "/.git");
+		git = new Git(localRepo);
 
-    public void testClone() throws IOException, GitAPIException {
-        Git.cloneRepository().setURI(remotePath).setCredentialsProvider(cp)
-                .setDirectory(new File(localPath)).call();
-    }
+	}
 
-    public void testAdd() throws IOException, GitAPIException {
-        File myfile = new File(localPath + "/myfile");
-        myfile.createNewFile();
-        git.add().addFilepattern("myfile").call();
-    }
+	public void testCreate() throws IOException {
+		// Repository newRepo = new FileRepository(localPath + ".git");
+		Repository existingRepo = new FileRepositoryBuilder().setGitDir(
+				new File(localPath + ".git")).build();
+		// newRepo.create();
+	}
 
-    public void testCommit() throws IOException, GitAPIException,
-            JGitInternalException {
-        git.commit().setMessage("Added myfile Fuck yeah!").call();
-    }
+	public void testClone() throws IOException, GitAPIException {
+		Git.cloneRepository().setURI(remotePath).setCredentialsProvider(cp)
+				.setDirectory(new File(localPath)).call();
+	}
 
-    public void testPush() throws IOException, JGitInternalException,
-            GitAPIException {
-        git.push().setCredentialsProvider(cp).call();
-    }
+	public void testAdd() throws IOException, GitAPIException {
+		File myfile = new File(localPath + "/myfile");
+		myfile.createNewFile();
+		git.add().addFilepattern("myfile").call();
+	}
 
-    public void testTrackMaster() throws IOException, JGitInternalException,
-            GitAPIException {
-        git.branchCreate().setName("master")
-                .setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
-                .setStartPoint("origin/master").setForce(true).call();
-    }
+	public void testCommit() throws IOException, GitAPIException,
+			JGitInternalException {
+		git.commit().setMessage("Added myfile Fuck yeah!").call();
+	}
 
-    public void testPull() throws IOException, GitAPIException {
-        git.pull().setCredentialsProvider(cp).call();
-    }
+	public void testPush() throws IOException, JGitInternalException,
+			GitAPIException {
+		git.push().setCredentialsProvider(cp).call();
+	}
+
+	public void testTrackMaster() throws IOException, JGitInternalException,
+			GitAPIException {
+		git.branchCreate().setName("master")
+				.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
+				.setStartPoint("origin/master").setForce(true).call();
+	}
+
+	public void testPull() throws IOException, GitAPIException {
+		git.pull().setCredentialsProvider(cp).call();
+	}
 }

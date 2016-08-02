@@ -1,6 +1,5 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Does a recursive search though directories
@@ -10,8 +9,8 @@ import java.util.List;
 public class FileWalker {
 
 	private String fileNameToSearch;
-	
-	//Store results
+
+	// Store results
 	private ArrayList<String> result = new ArrayList<String>();
 	private ArrayList<File> resultFiles = new ArrayList<File>();
 
@@ -26,6 +25,7 @@ public class FileWalker {
 	public ArrayList<String> getResult() {
 		return result;
 	}
+
 	public ArrayList<File> getResultFiles() {
 		return resultFiles;
 	}
@@ -34,7 +34,8 @@ public class FileWalker {
 
 		FileWalker fileSearch = new FileWalker();
 
-		fileSearch.searchDirectory(new File("C:/Users/Hakau/Documents"), ".git");
+		fileSearch
+				.searchDirectory(new File("C:/Users/Hakau/Documents"), ".git");
 
 		int count = fileSearch.getResult().size();
 		if (count == 0) {
@@ -68,7 +69,7 @@ public class FileWalker {
 					+ file.getAbsoluteFile());
 
 			// Check read permissions and not at end of tree
-			if (file.canRead() && file.listFiles()!= null) {
+			if (file.canRead() && file.listFiles() != null) {
 				// Get sub directories
 				for (File temp : file.listFiles()) {
 					// We have no reason to deal with files atm
@@ -78,15 +79,14 @@ public class FileWalker {
 								temp.getName().toLowerCase())) {
 							result.add(temp.getAbsoluteFile().toString());
 							resultFiles.add(temp.getAbsoluteFile());
-						}
-						else
+						} else
 							search(temp);
 					}
 				}
 
 			} else {
-				System.out
-						.println(file.getAbsoluteFile() + " Permission Denied");
+				System.out.println(file.getAbsoluteFile()
+						+ " Permission Denied");
 			}
 		}
 

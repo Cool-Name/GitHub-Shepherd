@@ -7,22 +7,21 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
  * 
  */
 public class Core {
-	
+
 	// NOTE : CHANGE THESE
 
 	// The main directory the program will operate on.
-	private static String searchRoot = "YOUR DIRECTORY TO SEARCH FROM";
-	
+	private static String searchRoot = "C:/Users/Hakau/Documents/comp314";
+
 	// Credentials used to access Github
-	private static CredentialsProvider cp = new UsernamePasswordCredentialsProvider("YOUR GITHUB USERNAME", "YOUR GITHUB PASSWORD");
-	
-	public static String getSearchRoot()
-	{
+	private static CredentialsProvider cp = new UsernamePasswordCredentialsProvider(
+			"HakauB", "Moheofo1");
+
+	public static String getSearchRoot() {
 		return searchRoot;
 	}
-	
-	public static CredentialsProvider getCreds()
-	{
+
+	public static CredentialsProvider getCreds() {
 		return cp;
 	}
 }
