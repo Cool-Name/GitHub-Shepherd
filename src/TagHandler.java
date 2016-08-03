@@ -1,11 +1,16 @@
-
 import java.util.*;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
+import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidTagNameException;
+import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 
 public class TagHandler {
 
@@ -18,7 +23,7 @@ public class TagHandler {
 		GitRepoBuilder.init();
 
 		TagHandler th = new TagHandler();
-		th.listAllTags();
+		th.listAllTagsForAllGits();
 	}
 
 	public TagHandler() {
@@ -50,37 +55,119 @@ public class TagHandler {
 			System.out.println("Do not have any repos. Closing!");
 		}
 	}
-	
-	public void listAllTags()
-	{
-		for(Git g : gits)
-		{
+
+	public void listAllTagsForAllGits() {
+		for (Git g : gits) {
 			try {
 				List<Ref> refs = g.tagList().call();
 				System.out.println(refs.size());
-				for(Ref ref : refs)
-				{
-					System.out.println("Tag: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
-					
-					LogCommand log = g.log();
-					
-					Ref peeledRef = g.getRepository().peel(ref);
-                    if(peeledRef.getPeeledObjectId() != null) {
-                    	log.add(peeledRef.getPeeledObjectId());
-                    } else {
-                    	log.add(ref.getObjectId());
-                    }
+				for (Ref ref : refs) {
+					System.out.println("Tag: " + ref + " " + ref.getName()
+							+ " " + ref.getObjectId().getName());
 
-        			Iterable<RevCommit> logs = log.call();
-        			for (RevCommit rev : logs) {
-        				System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
-        			}
+					LogCommand log = g.log();
+
+					Ref peeledRef = g.getRepository().peel(ref);
+					if (peeledRef.getPeeledObjectId() != null) {
+						log.add(peeledRef.getPeeledObjectId());
+					} else {
+						log.add(ref.getObjectId());
+					}
+
+					Iterable<RevCommit> logs = log.call();
+					for (RevCommit rev : logs) {
+						System.out.println("Commit: " + rev /*
+															 * + ", name: " +
+															 * rev.getName() +
+															 * ", id: " +
+															 * rev.getId
+															 * ().getName()
+															 */);
+					}
 
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public void listTags(Git g) {
+		try {
+			List<Ref> refs = g.tagList().call();
+			System.out.println(refs.size());
+			for (Ref ref : refs) {
+				System.out.println("Tag: " + ref + " " + ref.getName() + " "
+						+ ref.getObjectId().getName());
+
+				LogCommand log = g.log();
+
+				Ref peeledRef = g.getRepository().peel(ref);
+				if (peeledRef.getPeeledObjectId() != null) {
+					log.add(peeledRef.getPeeledObjectId());
+				} else {
+					log.add(ref.getObjectId());
+				}
+
+				Iterable<RevCommit> logs = log.call();
+				for (RevCommit rev : logs) {
+					System.out.println("Commit: " + rev /*
+														 * + ", name: " +
+														 * rev.getName() +
+														 * ", id: " +
+														 * rev.getId().getName()
+														 */);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void createTag(Git g, String tag)
+	{
+		try {
+			Ref t = g.tag().setName(tag).call();
+	        System.out.println("Created/moved tag " + t + " to repository at " + g.getRepository().getDirectory());
+		} catch (ConcurrentRefUpdateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidTagNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoHeadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteTag(Git g, String tag)
+	{
+		try {
+			g.tagDelete().setTags(tag).call();
+		} catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void moveTag(Git sourceG, Git destG, String tag)
+	{
+		try{
+			ObjectId id = sourceG.getRepository().resolve("HEAD^");
+			RevWalk rev = new RevWalk(sourceG.getRepository());
+			RevCommit commit = rev.parseCommit(id);
+			
+			Ref t = destG.tag().setObjectId(commit).setName(tag).call();
+			System.out.println("Created/moved tag " + t + " to repository at " + destG.getRepository().getDirectory());
+			rev.close();
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 }
