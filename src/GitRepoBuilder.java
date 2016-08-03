@@ -78,7 +78,6 @@ public class GitRepoBuilder {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
