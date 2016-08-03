@@ -12,13 +12,27 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TagHandler.
+ * Does most things to do with tags
+ */
 public class TagHandler {
 
+	/** The file walker. */
 	FileWalker fw;
 
+	/** The local repositories. */
 	private ArrayList<Repository> repos;
+	
+	/** The local git objects. */
 	private ArrayList<Git> gits;
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		GitRepoBuilder.init();
 
@@ -26,6 +40,10 @@ public class TagHandler {
 		th.listAllTagsForAllGits();
 	}
 
+	/**
+	 * Instantiates a new tag handler.
+	 * Hunts for repositories and creates the handler.
+	 */
 	public TagHandler() {
 		// Make sure we haven't called prematurely
 		if (GitRepoBuilder.getrepositoryGits() == null
@@ -56,6 +74,9 @@ public class TagHandler {
 		}
 	}
 
+	/**
+	 * List all tags for all gits.
+	 */
 	public void listAllTagsForAllGits() {
 		for (Git g : gits) {
 			try {
@@ -93,6 +114,11 @@ public class TagHandler {
 		}
 	}
 
+	/**
+	 * List tags.
+	 *
+	 * @param g The git to list from
+	 */
 	public void listTags(Git g) {
 		try {
 			List<Ref> refs = g.tagList().call();
@@ -125,6 +151,12 @@ public class TagHandler {
 		}
 	}
 	
+	/**
+	 * Creates the tag.
+	 *
+	 * @param g The git to tag
+	 * @param tag The tag to create
+	 */
 	public void createTag(Git g, String tag)
 	{
 		try {
@@ -145,6 +177,12 @@ public class TagHandler {
 		}
 	}
 	
+	/**
+	 * Delete tag.
+	 *
+	 * @param g The git to delete from
+	 * @param tag The tag to delete
+	 */
 	public void deleteTag(Git g, String tag)
 	{
 		try {
@@ -156,6 +194,13 @@ public class TagHandler {
 
 	}
 	
+	/**
+	 * Move tag.
+	 *
+	 * @param sourceG The source Git
+	 * @param destG The destination Git
+	 * @param tag The tag to move
+	 */
 	public void moveTag(Git sourceG, Git destG, String tag)
 	{
 		try{

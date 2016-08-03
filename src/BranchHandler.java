@@ -13,13 +13,27 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BranchHandler.
+ * Does most things to do with branches.
+ */
 public class BranchHandler {
 	
+	/** The file walker. */
 	FileWalker fw;
 
+	/** The local repositories. */
 	private ArrayList<Repository> repos;
+	
+	/** The git objects. */
 	private ArrayList<Git> gits;
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		GitRepoBuilder.init();
 
@@ -27,6 +41,9 @@ public class BranchHandler {
 		bh.listAllBranchesForAllGits();
 	}
 
+	/**
+	 * Instantiates a new branch handler.
+	 */
 	public BranchHandler() {
 		// Make sure we haven't called prematurely
 		if (GitRepoBuilder.getrepositoryGits() == null
@@ -57,6 +74,9 @@ public class BranchHandler {
 		}
 	}
 	
+	/**
+	 * List all branches for all gits.
+	 */
 	public void listAllBranchesForAllGits()
 	{
 		for(Git g : gits)
@@ -79,6 +99,11 @@ public class BranchHandler {
 		}
 	}
 	
+	/**
+	 * List branches.
+	 *
+	 * @param g The git to list from
+	 */
 	public void listBranches(Git g)
 	{
 		try {
@@ -98,6 +123,12 @@ public class BranchHandler {
 		}
 	}
 	
+	/**
+	 * Adds the branch.
+	 *
+	 * @param g The git to add the branch to
+	 * @param branch The branch to add
+	 */
 	public void addBranch(Git g, String branch)
 	{
 		try {
@@ -117,6 +148,12 @@ public class BranchHandler {
 		}
 	}
 	
+	/**
+	 * Delete branch.
+	 *
+	 * @param g The git to delete from
+	 * @param branch The branch to delete
+	 */
 	public void deleteBranch(Git g, String branch)
 	{
 		try {

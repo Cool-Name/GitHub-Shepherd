@@ -7,8 +7,17 @@ import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Cloner.
+ */
 public class Cloner {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args){
 		String remoteUrl = args[0];
 		String toLocation = args[1];

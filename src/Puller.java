@@ -4,19 +4,29 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
-/*
- * A class that automatically pulls for
- * local repositories from the github
- * URL specified in the HEAD Ref
- * 
+// TODO: Auto-generated Javadoc
+
+/**
+ * The Class Puller.
+ * Automatically pulls to update local
+ * git repositories.
  */
 public class Puller {
 
+	/** The file walker used to search for local repositories. */
 	FileWalker fw;
 
+	/** The repositories returned by the file walker. */
 	private ArrayList<Repository> repos;
+	
+	/** The git objects returned by the file walker. */
 	private ArrayList<Git> gits;
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		GitRepoBuilder.init();
 
@@ -25,6 +35,11 @@ public class Puller {
 		System.out.println("Done pulling");
 	}
 
+	/**
+	 * Instantiates a new puller.
+	 * Hunts down local repositories using the file walker
+	 * and sets up a puller for them.
+	 */
 	public Puller() {
 		// Make sure we haven't called prematurely
 		if (GitRepoBuilder.getrepositoryGits() == null
@@ -55,6 +70,10 @@ public class Puller {
 		}
 	}
 
+	/**
+	 * Pull all.
+	 * Pulls all repositories to update them.
+	 */
 	// Basically just calls a pull command for each git object
 	public void pullAll() {
 		for (Git g : gits) {
@@ -63,6 +82,11 @@ public class Puller {
 		}
 	}
 
+	/**
+	 * Pull single.
+	 *
+	 * @param g the g
+	 */
 	public void pullSingle(Git g) {
 		try {
 			g.pull().setCredentialsProvider(Core.getCreds()).call();
@@ -73,6 +97,11 @@ public class Puller {
 		}
 	}
 
+	/**
+	 * Pull single.
+	 *
+	 * @param s The string representing the it directory location
+	 */
 	public void pullSingle(String s) {
 		try {
 

@@ -5,11 +5,21 @@ import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Pusher.
+ */
 public class Pusher {
 
+	/** The repos. */
 	private ArrayList<Repository> repos;
+	
+	/** The gits. */
 	private ArrayList<Git> gits;
 
+	/**
+	 * Instantiates a new pusher.
+	 */
 	public Pusher() {
 		// Make sure we haven't called prematurely
 		if (GitRepoBuilder.getrepositoryGits() == null
@@ -40,6 +50,9 @@ public class Pusher {
 		}
 	}
 	
+	/**
+	 * Push all.
+	 */
 	public void pushAll()
 	{
 		for(Git g : gits)
@@ -49,6 +62,11 @@ public class Pusher {
 		}
 	}
 
+	/**
+	 * Push single.
+	 *
+	 * @param g The git repository to push 
+	 */
 	public void pushSingle(Git g) {
 		if (g == null) {
 			return;
@@ -63,6 +81,11 @@ public class Pusher {
 		}
 	}
 	
+	/**
+	 * Push single.
+	 *
+	 * @param s The repository directory to push 
+	 */
 	public void pushSingle(String s) {
 		if (s == null) {
 			return;

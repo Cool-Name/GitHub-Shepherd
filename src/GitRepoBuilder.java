@@ -12,6 +12,10 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GitRepoBuilder.
+ */
 /*
  * A class that takes the git-containing repositories 
  * and constructs the relevant git objects. Also handles
@@ -25,34 +29,69 @@ import org.eclipse.jgit.lib.Repository;
  */
 public class GitRepoBuilder {
 
+	/** The repository strings. */
 	// Different representations of repository systems
 	private static ArrayList<String> repositoryStrings = new ArrayList<String>();
+	
+	/** The repository repos. */
 	private static ArrayList<Repository> repositoryRepos = new ArrayList<Repository>();
+	
+	/** The repository gits. */
 	private static ArrayList<Git> repositoryGits = new ArrayList<Git>();
 
+	/** The string cache location. */
 	// Where the cache file was most recently stored.
 	private static String stringCacheLocation;
 
+	/**
+	 * Gets the repository repos.
+	 *
+	 * @return the repository repos
+	 */
 	public static ArrayList<Repository> getrepositoryRepos() {
 		return repositoryRepos;
 	}
 
+	/**
+	 * Gets the repository gits.
+	 *
+	 * @return the repository gits
+	 */
 	public static ArrayList<Git> getrepositoryGits() {
 		return repositoryGits;
 	}
 
+	/**
+	 * Sets the repository repos.
+	 *
+	 * @param reps the new repository repos
+	 */
 	public static void setrepositoryRepos(ArrayList<Repository> reps) {
 		repositoryRepos = reps;
 	}
 
+	/**
+	 * Sets the repository gits.
+	 *
+	 * @param gits the new repository gits
+	 */
 	public static void setrepositoryGits(ArrayList<Git> gits) {
 		repositoryGits = gits;
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		init();
 	}
 
+	/**
+	 * Inits the local repositories.
+	 * Note that this is not init in the Git sense
+	 */
 	/*
 	 * Idealy this should only be run once, then the user can decide to re-use
 	 * if they want to do a system wide update This basically searches for all
@@ -81,6 +120,9 @@ public class GitRepoBuilder {
 		}
 	}
 
+	/**
+	 * Cache strings.
+	 */
 	/*
 	 * Write repo locations to a text file so that we can load in later for
 	 * speed
@@ -109,6 +151,11 @@ public class GitRepoBuilder {
 		}
 	}
 
+	/**
+	 * Cache strings.
+	 *
+	 * @param location The location to cache to
+	 */
 	public static void cacheStrings(String location) {
 		if (repositoryStrings.isEmpty())
 			return;
@@ -129,6 +176,9 @@ public class GitRepoBuilder {
 		}
 	}
 
+	/**
+	 * Read input strings from cache.
+	 */
 	/*
 	 * Read in a text cache of repository locations
 	 * 
@@ -154,6 +204,11 @@ public class GitRepoBuilder {
 		}
 	}
 
+	/**
+	 * Read input strings from cache.
+	 *
+	 * @param location The cache location
+	 */
 	public static void readInputStrings(String location) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(location));
@@ -173,6 +228,11 @@ public class GitRepoBuilder {
 		}
 	}
 
+	/**
+	 * Read input strings.
+	 *
+	 * @param append Whether or not we use the append option
+	 */
 	public static void readInputStrings(boolean append) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(
@@ -194,6 +254,12 @@ public class GitRepoBuilder {
 		}
 	}
 
+	/**
+	 * Read input strings.
+	 *
+	 * @param location the location
+	 * @param append Whether or not we append
+	 */
 	public static void readInputStrings(String location, boolean append) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(location));
@@ -214,10 +280,16 @@ public class GitRepoBuilder {
 		}
 	}
 
+	/**
+	 * Cache repo data.
+	 */
 	public static void cacheRepoData() {
 		// TODO Do this once repo structure is better understood
 	}
 
+	/**
+	 * Cache git data.
+	 */
 	public static void cacheGitData() {
 		// TODO Do this once Git data is better understood
 	}

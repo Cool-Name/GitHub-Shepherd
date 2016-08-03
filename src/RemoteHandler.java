@@ -9,17 +9,33 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RemoteHandler.
+ */
 public class RemoteHandler {
 
+	/** The fw. */
 	FileWalker fw;
 
+	/** The repos. */
 	private ArrayList<Repository> repos;
+	
+	/** The gits. */
 	private ArrayList<Git> gits;
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		
 	}
 
+	/**
+	 * Instantiates a new remote handler.
+	 */
 	public RemoteHandler() {
 		// Make sure we haven't called prematurely
 		if (GitRepoBuilder.getrepositoryGits() == null
@@ -50,6 +66,9 @@ public class RemoteHandler {
 		}
 	}
 	
+	/**
+	 * List all remotes for all gits.
+	 */
 	public void listAllRemotesForAllGits()
 	{
 		for(Git g : gits)
@@ -84,6 +103,11 @@ public class RemoteHandler {
 		}
 	}
 	
+	/**
+	 * List remotes for a given Git repository.
+	 *
+	 * @param g The git to list for
+	 */
 	public void listRemotes(Git g)
 	{
 		try {
@@ -115,6 +139,11 @@ public class RemoteHandler {
 		}
 	}
 	
+	/**
+	 * List remotes from repository URL.
+	 *
+	 * @param URL The url to list for
+	 */
 	public void listRemotesFromRepositoryURL(String URL)
 	{
 		try {

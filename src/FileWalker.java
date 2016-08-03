@@ -1,6 +1,10 @@
 import java.io.File;
 import java.util.ArrayList;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FileWalker.
+ */
 /*
  * Does a recursive search though directories
  * looking for specified sub-directory
@@ -8,28 +12,57 @@ import java.util.ArrayList;
  */
 public class FileWalker {
 
+	/** The file name to search. */
 	private String fileNameToSearch;
 
+	/** The result. */
 	// Store results
 	private ArrayList<String> result = new ArrayList<String>();
+	
+	/** The result files. */
 	private ArrayList<File> resultFiles = new ArrayList<File>();
 
+	/**
+	 * Gets the file name to search.
+	 *
+	 * @return the file name to search
+	 */
 	public String getFileNameToSearch() {
 		return fileNameToSearch;
 	}
 
+	/**
+	 * Sets the file name to search.
+	 *
+	 * @param fileNameToSearch the new file name to search
+	 */
 	public void setFileNameToSearch(String fileNameToSearch) {
 		this.fileNameToSearch = fileNameToSearch;
 	}
 
+	/**
+	 * Gets the result.
+	 *
+	 * @return the result
+	 */
 	public ArrayList<String> getResult() {
 		return result;
 	}
 
+	/**
+	 * Gets the result files.
+	 *
+	 * @return the result files
+	 */
 	public ArrayList<File> getResultFiles() {
 		return resultFiles;
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 
 		FileWalker fileSearch = new FileWalker();
@@ -48,6 +81,12 @@ public class FileWalker {
 		}
 	}
 
+	/**
+	 * Search directory.
+	 *
+	 * @param directory the directory
+	 * @param fileNameToSearch the file name to search
+	 */
 	public void searchDirectory(File directory, String fileNameToSearch) {
 
 		setFileNameToSearch(fileNameToSearch);
@@ -62,6 +101,11 @@ public class FileWalker {
 
 	}
 
+	/**
+	 * Search.
+	 *
+	 * @param file The file to search
+	 */
 	private void search(File file) {
 
 		if (file.isDirectory()) {

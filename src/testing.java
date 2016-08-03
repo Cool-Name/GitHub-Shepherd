@@ -16,8 +16,17 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class testing.
+ */
 public class testing {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 
 		testing t = new testing();
@@ -60,14 +69,25 @@ public class testing {
 
 	}
 
+	/** The remote path. */
 	private String localPath, remotePath;
+	
+	/** The local repo. */
 	private Repository localRepo;
+	
+	/** The git. */
 	private Git git;
 
+	/** The cp. */
 	// NOTE : CHANGE THESE
 	CredentialsProvider cp = new UsernamePasswordCredentialsProvider(
 			"GIT USER", "GIT PASS");
 
+	/**
+	 * Inits the.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void init() throws IOException {
 
 		// NOTE : CHANGE THESE
@@ -78,6 +98,11 @@ public class testing {
 
 	}
 
+	/**
+	 * Test create.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void testCreate() throws IOException {
 		// Repository newRepo = new FileRepository(localPath + ".git");
 		Repository existingRepo = new FileRepositoryBuilder().setGitDir(
@@ -85,27 +110,60 @@ public class testing {
 		// newRepo.create();
 	}
 
+	/**
+	 * Test clone.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws GitAPIException the git API exception
+	 */
 	public void testClone() throws IOException, GitAPIException {
 		Git.cloneRepository().setURI(remotePath).setCredentialsProvider(cp)
 				.setDirectory(new File(localPath)).call();
 	}
 
+	/**
+	 * Test add.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws GitAPIException the git API exception
+	 */
 	public void testAdd() throws IOException, GitAPIException {
 		File myfile = new File(localPath + "/myfile");
 		myfile.createNewFile();
 		git.add().addFilepattern("myfile").call();
 	}
 
+	/**
+	 * Test commit.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws GitAPIException the git API exception
+	 * @throws JGitInternalException the j git internal exception
+	 */
 	public void testCommit() throws IOException, GitAPIException,
 			JGitInternalException {
 		git.commit().setMessage("Added myfile Fuck yeah!").call();
 	}
 
+	/**
+	 * Test push.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws JGitInternalException the j git internal exception
+	 * @throws GitAPIException the git API exception
+	 */
 	public void testPush() throws IOException, JGitInternalException,
 			GitAPIException {
 		git.push().setCredentialsProvider(cp).call();
 	}
 
+	/**
+	 * Test track master.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws JGitInternalException the j git internal exception
+	 * @throws GitAPIException the git API exception
+	 */
 	public void testTrackMaster() throws IOException, JGitInternalException,
 			GitAPIException {
 		git.branchCreate().setName("master")
@@ -113,6 +171,12 @@ public class testing {
 				.setStartPoint("origin/master").setForce(true).call();
 	}
 
+	/**
+	 * Test pull.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws GitAPIException the git API exception
+	 */
 	public void testPull() throws IOException, GitAPIException {
 		git.pull().setCredentialsProvider(cp).call();
 	}
