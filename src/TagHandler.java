@@ -157,7 +157,7 @@ public class TagHandler {
 	 * @param g The git to tag
 	 * @param tag The tag to create
 	 */
-	public void createTag(Git g, String tag)
+	public static void createTag(Git g, String tag)
 	{
 		try {
 			Ref t = g.tag().setName(tag).call();
@@ -183,7 +183,7 @@ public class TagHandler {
 	 * @param g The git to delete from
 	 * @param tag The tag to delete
 	 */
-	public void deleteTag(Git g, String tag)
+	public static void deleteTag(Git g, String tag)
 	{
 		try {
 			g.tagDelete().setTags(tag).call();
@@ -201,7 +201,7 @@ public class TagHandler {
 	 * @param destG The destination Git
 	 * @param tag The tag to move
 	 */
-	public void moveTag(Git sourceG, Git destG, String tag)
+	public static void moveTag(Git sourceG, Git destG, String tag)
 	{
 		try{
 			ObjectId id = sourceG.getRepository().resolve("HEAD^");

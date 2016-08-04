@@ -67,7 +67,7 @@ public class Pusher {
 	 *
 	 * @param g The git repository to push 
 	 */
-	public void pushSingle(Git g) {
+	public static void pushSingle(Git g) {
 		if (g == null) {
 			return;
 		}
@@ -86,7 +86,7 @@ public class Pusher {
 	 *
 	 * @param s The repository directory to push 
 	 */
-	public void pushSingle(String s) {
+	public static void pushSingle(String s) {
 		if (s == null) {
 			return;
 		}

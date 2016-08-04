@@ -7,8 +7,17 @@ import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Adder.
+ */
 public class Adder {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		String direc = args[0];
 		String fileName = args[1];
@@ -26,8 +35,14 @@ public class Adder {
 		}
 	}
 
+	/**
+	 * Adds the file.
+	 *
+	 * @param g the g
+	 * @param fileName the file name
+	 */
 	// This will probs end up being static
-	public void addFile(Git g, String fileName) {
+	public static void addFile(Git g, String fileName) {
 		File myFile = new File(g.getRepository().getDirectory().getParent(),
 				fileName);
 
@@ -51,6 +66,11 @@ public class Adder {
 		}
 	}
 
+	/**
+	 * Adds the all.
+	 *
+	 * @param g the g
+	 */
 	public void addAll(Git g) {
 
 		try {

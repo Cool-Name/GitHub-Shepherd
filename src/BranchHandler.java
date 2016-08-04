@@ -104,7 +104,7 @@ public class BranchHandler {
 	 *
 	 * @param g The git to list from
 	 */
-	public void listBranches(Git g)
+	public static void listBranches(Git g)
 	{
 		try {
 			List<Ref> call = g.branchList().call();
@@ -129,7 +129,7 @@ public class BranchHandler {
 	 * @param g The git to add the branch to
 	 * @param branch The branch to add
 	 */
-	public void addBranch(Git g, String branch)
+	public static void addBranch(Git g, String branch)
 	{
 		try {
 			g.branchCreate().setName(branch).call();
@@ -154,7 +154,7 @@ public class BranchHandler {
 	 * @param g The git to delete from
 	 * @param branch The branch to delete
 	 */
-	public void deleteBranch(Git g, String branch)
+	public static void deleteBranch(Git g, String branch)
 	{
 		try {
 			g.branchDelete().setBranchNames(branch).call();

@@ -7,8 +7,17 @@ import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Committer.
+ */
 public class Committer {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args)
 	{
 		String direc = args[0];
@@ -33,7 +42,15 @@ public class Committer {
 		}
 	}
 	
-	public void commitSingle(Git g, String fileName, String direc, String message)
+	/**
+	 * Commit single.
+	 *
+	 * @param g the g
+	 * @param fileName the file name
+	 * @param direc the direc
+	 * @param message the message
+	 */
+	public static void commitSingle(Git g, String fileName, String direc, String message)
 	{
 		File myfile = new File(g.getRepository().getDirectory().getParent(), fileName);
         try {
@@ -49,7 +66,16 @@ public class Committer {
 		}
 	}
 	
-	public void commitSingle(Git g, String fileName, String direc, String message, boolean amend)
+	/**
+	 * Commit single.
+	 *
+	 * @param g the g
+	 * @param fileName the file name
+	 * @param direc the direc
+	 * @param message the message
+	 * @param amend the amend
+	 */
+	public static void commitSingle(Git g, String fileName, String direc, String message, boolean amend)
 	{
 		File myfile = new File(g.getRepository().getDirectory().getParent(), fileName);
         try {
@@ -65,6 +91,11 @@ public class Committer {
 		}
 	}
 	
+	/**
+	 * Commit all.
+	 *
+	 * @param g the g
+	 */
 	public void commitAll(Git g)
 	{
 		try {
@@ -82,6 +113,12 @@ public class Committer {
 		}
 	}
 	
+	/**
+	 * Commit all.
+	 *
+	 * @param g the g
+	 * @param message the message
+	 */
 	public void commitAll(Git g, String message)
 	{
 		try {

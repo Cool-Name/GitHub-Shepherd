@@ -108,7 +108,7 @@ public class RemoteHandler {
 	 *
 	 * @param g The git to list for
 	 */
-	public void listRemotes(Git g)
+	public static void listRemotes(Git g)
 	{
 		try {
 			Collection<Ref> refs = g.lsRemote().call();
@@ -144,7 +144,7 @@ public class RemoteHandler {
 	 *
 	 * @param URL The url to list for
 	 */
-	public void listRemotesFromRepositoryURL(String URL)
+	public static void listRemotesFromRepositoryURL(String URL)
 	{
 		try {
 			Collection<Ref> refs = Git.lsRemoteRepository().setHeads(true).setTags(true).setRemote(URL).call();

@@ -87,7 +87,7 @@ public class Puller {
 	 *
 	 * @param g the g
 	 */
-	public void pullSingle(Git g) {
+	public static void pullSingle(Git g) {
 		try {
 			g.pull().setCredentialsProvider(Core.getCreds()).call();
 		} catch (TransportException e) {
@@ -102,7 +102,7 @@ public class Puller {
 	 *
 	 * @param s The string representing the it directory location
 	 */
-	public void pullSingle(String s) {
+	public static void pullSingle(String s) {
 		try {
 
 			Git g = new Git(new FileRepository(s));
