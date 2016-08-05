@@ -89,12 +89,12 @@
    <center>
       <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" />
+          <TableColumn maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" />
           <TableColumn maxWidth="1000.0" minWidth="50.0" prefWidth="400.0" text="Repositories" />
             <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Current Version" />
             <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Latest Version" />
             <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Last Pulled" />
-            <TableColumn maxWidth="1500.0" minWidth="50.0" prefWidth="500.0" text="Description" />
+            <TableColumn maxWidth="1500.0" minWidth="50.0" prefWidth="700.0" text="Description" />
         </columns>
       </TableView>
    </center>
