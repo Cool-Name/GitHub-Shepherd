@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <VBox prefHeight="92.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <FlowPane prefHeight="64.0" prefWidth="1400.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0">
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/server-add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0">
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/server-remove.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0">
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/server-upgrade.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button layoutX="146.0" layoutY="10.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0">
+                     <graphic>
+                        <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/server-scan.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children></FlowPane>
+         </children>
+      </VBox>
+   </top>
+   <left>
+      <TreeView prefHeight="704.0" prefWidth="268.0">
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </TreeView>
+   </left>
+   <center>
+      <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" />
+          <TableColumn maxWidth="1000.0" minWidth="50.0" prefWidth="400.0" text="Repositories" />
+            <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Current Version" />
+            <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Latest Version" />
+            <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Last Pulled" />
+            <TableColumn maxWidth="1500.0" minWidth="50.0" prefWidth="500.0" text="Description" />
+        </columns>
+      </TableView>
+   </center>
+</BorderPane>
