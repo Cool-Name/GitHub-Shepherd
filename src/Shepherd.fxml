@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MyController">
    <top>
       <VBox prefHeight="92.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
          <children>
@@ -75,6 +75,9 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Button fx:id="listRepoBtn" layoutX="214.0" layoutY="10.0" mnemonicParsing="false" onAction="#listRepos" prefHeight="64.0" prefWidth="187.0" text="List Repositories" />
+                  <Button layoutX="278.0" layoutY="10.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="134.0" text="Pull All" />
+                  <Button layoutX="465.0" layoutY="10.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="123.0" text="Pull Selected" />
                </children></FlowPane>
          </children>
       </VBox>
@@ -87,14 +90,14 @@
       </TreeView>
    </left>
    <center>
-      <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="data_table" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" />
-          <TableColumn maxWidth="1000.0" minWidth="50.0" prefWidth="400.0" text="Repositories" />
-            <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Current Version" />
-            <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Latest Version" />
-            <TableColumn maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Last Pulled" />
-            <TableColumn maxWidth="1500.0" minWidth="50.0" prefWidth="700.0" text="Description" />
+          <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" />
+          <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="400.0" text="Repositories" />
+            <TableColumn fx:id="current_version" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Current Version" />
+            <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Latest Version" />
+            <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Last Pulled" />
+            <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="700.0" text="Description" />
         </columns>
       </TableView>
    </center>
