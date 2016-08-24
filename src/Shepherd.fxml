@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MyController">
    <top>
-      <VBox prefHeight="92.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="21.0" prefWidth="1400.0" BorderPane.alignment="CENTER">
          <children>
             <MenuBar>
               <menus>
@@ -37,6 +38,12 @@
                 </Menu>
               </menus>
             </MenuBar>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <VBox prefHeight="704.0" prefWidth="315.0" BorderPane.alignment="CENTER">
+         <children>
             <FlowPane prefHeight="64.0" prefWidth="1400.0">
                <children>
                   <Button mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0">
@@ -78,27 +85,40 @@
                   <Button fx:id="listRepoBtn" layoutX="214.0" layoutY="10.0" mnemonicParsing="false" onAction="#listRepos" prefHeight="64.0" prefWidth="187.0" text="List Repositories" />
                   <Button layoutX="278.0" layoutY="10.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="134.0" text="Pull All" />
                   <Button layoutX="465.0" layoutY="10.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="123.0" text="Pull Selected" />
-               </children></FlowPane>
+               </children>
+            </FlowPane>
+            <TableView fx:id="data_table" prefHeight="683.0" prefWidth="1300.0" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" />
+                <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="400.0" text="Repositories" />
+                  <TableColumn fx:id="current_version" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Current Version" />
+                  <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Latest Version" />
+                  <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Last Pulled" />
+                  <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="700.0" text="Description" />
+              </columns>
+            </TableView>
          </children>
       </VBox>
-   </top>
-   <left>
-      <TreeView prefHeight="704.0" prefWidth="268.0">
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-      </TreeView>
-   </left>
-   <center>
-      <TableView fx:id="data_table" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <columns>
-          <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" />
-          <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="400.0" text="Repositories" />
-            <TableColumn fx:id="current_version" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Current Version" />
-            <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Latest Version" />
-            <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Last Pulled" />
-            <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="700.0" text="Description" />
-        </columns>
-      </TableView>
    </center>
+   <left>
+      <VBox prefHeight="768.0" prefWidth="272.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="64.0" prefWidth="268.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@images/plus.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <TextField prefHeight="41.0" prefWidth="226.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <TreeView prefHeight="749.0" prefWidth="272.0" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
+   </left>
 </BorderPane>
