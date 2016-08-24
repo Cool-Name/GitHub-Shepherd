@@ -114,7 +114,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <TextField fx:id="serverTextField" prefHeight="41.0" prefWidth="226.0" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="serverTextField" onAction="#AddServer" prefHeight="41.0" prefWidth="226.0" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <TreeView fx:id="serverList" onContextMenuRequested="#ShowContextMenu" prefHeight="749.0" prefWidth="272.0" VBox.vgrow="ALWAYS" />

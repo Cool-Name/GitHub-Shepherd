@@ -26,30 +26,24 @@ public class Shepherd extends Application {
         launch(args);
     }
     
-   private final ObservableList<String> repoList = FXCollections.observableArrayList(
-    		new String("A"),
-    		new String("B"),
-    		new String("C")
-    		); 
-    
     @Override
     public void start(Stage stage) throws Exception {
-       Parent root = FXMLLoader.load(getClass().getResource("Shepherd.fxml"));
        
-       //FXMLLoader loader = new FXMLLoader(getClass().getResource("Shepherd.fxml"));
-       //loader.setRoot(FXMLLoader.load(getClass().getResource("Shepherd.fxml")));
-       //loader.setController(new MyController());
-       MyController mc = new MyController();
+    	//sets the stage to use our fxml layout
+    	Parent root = FXMLLoader.load(getClass().getResource("Shepherd.fxml"));
        
-        Scene scene = new Scene(root, 1800, 800);
-    
-      
-        
-    
-    stage.getIcons().add(new Image("file:images/logo.png"));
-        stage.setTitle("Github Shepherd");
-        stage.setScene(scene);
-        stage.show();
+    	//sets default window size
+    	Scene scene = new Scene(root, 1800, 800);
+       
+       //sets icon
+       stage.getIcons().add(new Image(getClass().getResourceAsStream("images/logo.png"))); 
+       
+       //sets title
+       stage.setTitle("Github Shepherd");
+       
+       //shows the stage
+       stage.setScene(scene);
+       stage.show();
         
     }
        
