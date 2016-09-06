@@ -123,6 +123,18 @@ public class BranchHandler {
 		}
 	}
 	
+	public static List<Ref> getBranches(Git g)
+	{
+		try {
+			List<Ref> allBranches = g.branchList().setListMode(ListMode.ALL).call();
+			
+			return allBranches;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * Adds the branch.
 	 *

@@ -1,3 +1,9 @@
+import java.io.File;
+import java.util.ArrayList;
+
+import javax.swing.filechooser.FileSystemView;
+
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
@@ -16,7 +22,9 @@ public class Core {
 
 	/** The search root. */
 	// The main directory the program will operate on.
-	private static String searchRoot = "C:/Users/Hakau/Documents/comp314";
+	private static String searchRoot = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();//default to my documents
+	
+	private static ArrayList<Git> repos;
 
 	/** The credential provider. */
 	// Credentials used to access Github
@@ -39,5 +47,10 @@ public class Core {
 	 */
 	public static CredentialsProvider getCreds() {
 		return cp;
+	}
+	
+	public static ArrayList<Git> getRepos()
+	{
+		return repos;
 	}
 }
