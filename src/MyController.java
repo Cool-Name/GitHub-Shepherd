@@ -93,27 +93,33 @@ public class MyController implements Initializable {
 				String url = conf.getString("remote", "origin", "url");
 				List<Ref> branchesList = BranchHandler.getBranches(g);
 				List<String> branchNames = new ArrayList<String>();
-				String hashString = (g.getRepository().resolve("HEAD") == null) ? ""
-						: "" + g.getRepository().resolve("HEAD").abbreviate(7).name();
-
-				String description = g.getRepository().readCommitEditMsg();
+				String hashString;
+				String description;
 				String authorDate;
 
 				try {
 					RevWalk revWalk = new RevWalk(g.getRepository());
 					revWalk.markStart(revWalk.parseCommit(g.getRepository().resolve(Constants.HEAD)));
 					RevCommit commit = revWalk.next();
-					revWalk.close();
-
+		
+					hashString = commit.getId().abbreviate(7).name();
+					description = commit.getFullMessage();
+					
 					// author
 					PersonIdent authorIdent = commit.getAuthorIdent();
 					// committer
 					PersonIdent committerIdent = commit.getCommitterIdent();
 					// date time
 					authorDate = modifyDateLayout(committerIdent.getWhen().toString());
+					
+					
+					
+					revWalk.close();
 
 				} catch (Exception e) {
 					authorDate = "";
+					description = "";
+					hashString = "";
 				}
 
 				for (Ref r : branchesList) {
@@ -139,6 +145,7 @@ public class MyController implements Initializable {
 	// allows the user to change the root directory
 	@FXML
 	private void setRootDirectory() {
+		observableList.clear();
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle("Set Root Directory");
 		File defaultDirectory = new File(Core.getSearchRoot());
