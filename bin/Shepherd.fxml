@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -23,7 +24,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem fx:id="fileChangeDirectory" onAction="#setRootDirectory" mnemonicParsing="false" text="Change Directory" />
+                    <MenuItem fx:id="fileChangeDirectory" mnemonicParsing="false" onAction="#setRootDirectory" text="Change Directory" />
                   </items>
                 </Menu>
               </menus>
@@ -44,7 +45,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button contentDisplay="TOP" layoutX="278.0" layoutY="10.0" mnemonicParsing="false" onAction="#pullAllRepos" prefHeight="81.0" prefWidth="134.0" text="Pull">
+                  <Button contentDisplay="TOP" layoutX="278.0" layoutY="10.0" mnemonicParsing="false" onAction="#pullSelectedRepos" prefHeight="81.0" prefWidth="134.0" text="Pull">
                      <graphic>
                         <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -54,26 +55,27 @@
                      </graphic></Button>
                </children>
             </FlowPane>
-            <TableView fx:id="data_table" prefHeight="683.0" prefWidth="1300.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="data_table" editable="true" prefHeight="683.0" prefWidth="1300.0" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" />
-                <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="350.0" text="Repositories" />
+                <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" sortable="false" />
+                <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="400.0" text="Repositories" />
                   <TableColumn fx:id="current_version" maxWidth="300.0" minWidth="50.0" prefWidth="130.0" text="Current Version" />
-                  <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="130.0" text="Latest Version" />
-                  <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="150.0" text="Last Pulled" />
+                  <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="137.0" text="Latest Version" />
+                  <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="160.0" text="Last Pulled" />
                   <TableColumn fx:id="hash" maxWidth="900.0" minWidth="50.0" prefWidth="100.0" text="Hash" />
-                  <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="700.0" text="Description" />
+                  <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="600.0" text="Description" />
               </columns>
             </TableView>
+            <ProgressIndicator fx:id="progressCircle" prefHeight="0.0" prefWidth="1128.0" visible="false" />
          </children>
       </VBox>
    </center>
    <left>
-      <VBox prefHeight="768.0" prefWidth="272.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="768.0" prefWidth="272.0">
          <children>
-            <HBox prefHeight="64.0" prefWidth="268.0">
+            <HBox prefHeight="42.0" prefWidth="272.0" VBox.vgrow="NEVER">
                <children>
-                  <Button fx:id="addServer" mnemonicParsing="false" onAction="#AddServer" prefHeight="42.0" prefWidth="42.0">
+                  <Button fx:id="addServer" mnemonicParsing="false" onAction="#AddServer" prefHeight="42.0" prefWidth="42.0" HBox.hgrow="NEVER">
                      <graphic>
                         <ImageView>
                            <image>
@@ -82,10 +84,10 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <TextField fx:id="serverTextField" onAction="#AddServer" prefHeight="41.0" prefWidth="226.0" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="serverTextField" onAction="#AddServer" prefHeight="42.0" prefWidth="227.0" HBox.hgrow="NEVER" />
                </children>
             </HBox>
-            <TreeView fx:id="serverList" onContextMenuRequested="#ShowContextMenu" prefHeight="749.0" prefWidth="272.0" VBox.vgrow="ALWAYS" />
+            <TreeView fx:id="serverList" onContextMenuRequested="#ShowContextMenu" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </left>

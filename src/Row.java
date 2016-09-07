@@ -1,9 +1,13 @@
 import java.util.List;
+
 import org.eclipse.jgit.api.Git;
 
+import javafx.beans.property.BooleanProperty;
+
 public class Row {
-	
-	private String enabled;
+
+	private BooleanProperty enabled;
+
 	private String repositories;
 	private String current_version;
 	private String latest_version;
@@ -13,9 +17,8 @@ public class Row {
 	private String description;
 	private Git g;
 
-	public Row(String _enabled, String _repositories, String _current_version,
-			String _latest_version, String _last_pulled, List<String> branches,
-			String _hash, String _description,  Git g) {
+	public Row(BooleanProperty _enabled, String _repositories, String _current_version, String _latest_version,
+			String _last_pulled, List<String> branches, String _hash, String _description, Git g) {
 		this.enabled = _enabled;
 		this.repositories = _repositories;
 		this.current_version = _current_version;
@@ -27,27 +30,28 @@ public class Row {
 		this.g = g;
 	}
 
-	
-	
 	public Git getGit() {
 		return g;
 	}
-	
+
 	public String getHash() {
 		return hash;
 	}
-	
+
 	public void setHash(String hash) {
 		this.hash = hash.toString();
 	}
-	
 
-	public String getEnabled() {
+	public BooleanProperty enabledProperty() {
 		return enabled;
 	}
 
-	public void setEnabled(String enabled) {
-		this.enabled = enabled.toString();
+	public boolean getEnabled() {
+		return this.enabled.get();
+	}
+
+	public void setEnabled(boolean value) {
+		this.enabled.set(value);
 	}
 
 	public String getRepositories() {

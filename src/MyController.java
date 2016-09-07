@@ -1,56 +1,39 @@
-import java.awt.Component;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.TimeZone;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableCell;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.util.Callback;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class MyController implements Initializable {
 
@@ -66,7 +49,7 @@ public class MyController implements Initializable {
 	@FXML
 	TableView<Row> data_table;
 	@FXML
-	TableColumn<Row, String> enabled;
+	TableColumn<Row, Boolean> enabled;
 	@FXML
 	TableColumn<Row, String> repositories;
 	@FXML
@@ -81,16 +64,28 @@ public class MyController implements Initializable {
 	TableColumn<Row, String> description;
 	@FXML
 	MenuItem fileChangeDirectory;
+	@FXML
+	ProgressIndicator progressCircle;
 
+	// sets format for last modified column
 	final String dateFormat = "dd/MM/yyyy hh:mm a";
 
 	TreeItem<String> root;
-
 	ObservableList<Row> observableList = FXCollections.observableArrayList();
 
+	// this code is run on startup
+	@Override
+	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+		// adds the root item servers
+		root = new TreeItem<String>("Servers");
+		root.setExpanded(true);
+		serverList.setRoot(root);
+	}
+
 	public void buildList() {
+		//clears the table
 		observableList.clear();
-		
+
 		for (Git g : GitRepoBuilder.getrepositoryGits()) {
 			try {
 				System.out.println(g.getRepository().getRepositoryState().toString());
@@ -109,14 +104,14 @@ public class MyController implements Initializable {
 					revWalk.markStart(revWalk.parseCommit(g.getRepository().resolve(Constants.HEAD)));
 					RevCommit commit = revWalk.next();
 					revWalk.close();
-					
-					//author
+
+					// author
 					PersonIdent authorIdent = commit.getAuthorIdent();
-					//committer
+					// committer
 					PersonIdent committerIdent = commit.getCommitterIdent();
-					//date time
+					// date time
 					authorDate = modifyDateLayout(committerIdent.getWhen().toString());
-					
+
 				} catch (Exception e) {
 					authorDate = "";
 				}
@@ -125,8 +120,9 @@ public class MyController implements Initializable {
 					branchNames.add(r.getName());
 				}
 
-				observableList.add(new Row("✓", g.getRepository().getDirectory().getAbsolutePath(), "v1.0", "v1.3",
-						authorDate, branchNames, hashString, description, g));
+				observableList.add(
+						new Row(new SimpleBooleanProperty(true), g.getRepository().getDirectory().getAbsolutePath(),
+								"v1.0", "v1.3", authorDate, branchNames, hashString, description, g));
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -139,26 +135,28 @@ public class MyController implements Initializable {
 		Date date = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy").parse(inputDate);
 		return new SimpleDateFormat(dateFormat).format(date);
 	}
-		
-	
-	//allows the user to change the root directory
+
+	// allows the user to change the root directory
 	@FXML
 	private void setRootDirectory() {
-	
 		DirectoryChooser chooser = new DirectoryChooser();
-		    chooser.setTitle("Set Root Directory");
-		    File defaultDirectory = new File(Core.getSearchRoot());
-		    chooser.setInitialDirectory(defaultDirectory);
-		    File selectedDirectory = chooser.showDialog(new Stage());
-		    Core.setSearchRoot(selectedDirectory.toString());
+		chooser.setTitle("Set Root Directory");
+		File defaultDirectory = new File(Core.getSearchRoot());
+		chooser.setInitialDirectory(defaultDirectory);
+		File selectedDirectory = chooser.showDialog(new Stage());
+		Core.setSearchRoot(selectedDirectory.toString());
 	}
 
 	@FXML
 	private void ListRepos() {
+		// progressCircle.setVisible(true);
+		// progressCircle.setMinSize(800, 800);
+
 		GitRepoBuilder.init();
 		buildList();
 
-		enabled.setCellValueFactory(new PropertyValueFactory<Row, String>("enabled"));
+		enabled.setCellValueFactory(param -> param.getValue().enabledProperty());
+		enabled.setCellFactory(CheckBoxTableCell.forTableColumn(enabled));
 		repositories.setCellValueFactory(new PropertyValueFactory<Row, String>("repositories"));
 		current_version.setCellValueFactory(new PropertyValueFactory<Row, String>("current_version"));
 		latest_version.setCellValueFactory(new PropertyValueFactory<Row, String>("latest_version"));
@@ -199,18 +197,15 @@ public class MyController implements Initializable {
 	}
 
 	@FXML
-	private void pullAllRepos() {
+	private void pullSelectedRepos() {
+		// pulls all repos that have a checkbox next to them
 		Puller p = new Puller();
-		p.pullAll();
-		ListRepos();
-	}
-
-	@FXML
-	private void pullSingleRepo() {
-		Row temp = data_table.getSelectionModel().getSelectedItem();
-		if (temp == null)
-			return;
-		Puller.pullSingle(temp.getGit());
+		for (Row r : observableList) {
+			if (r.getEnabled() == true) {
+				PullThread pt = new PullThread(r.getGit());
+				pt.start();
+			}
+		}
 	}
 
 	@FXML
@@ -225,13 +220,5 @@ public class MyController implements Initializable {
 			// clears the text from the server textField
 			serverTextField.clear();
 		}
-	}
-
-	@Override
-	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-		// adds the root item servers
-		root = new TreeItem<String>("Servers");
-		root.setExpanded(true);
-		serverList.setRoot(root);
 	}
 }
