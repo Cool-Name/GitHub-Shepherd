@@ -1,3 +1,4 @@
+import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -13,6 +14,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileSystemView;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.errors.NoWorkTreeException;
@@ -32,6 +36,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -42,6 +47,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class MyController implements Initializable {
@@ -71,6 +79,8 @@ public class MyController implements Initializable {
 	TableColumn<Row, Hyperlink> hash;
 	@FXML
 	TableColumn<Row, String> description;
+	@FXML
+	MenuItem fileChangeDirectory;
 
 	final String dateFormat = "dd/MM/yyyy hh:mm a";
 
@@ -80,6 +90,7 @@ public class MyController implements Initializable {
 
 	public void buildList() {
 		observableList.clear();
+		
 		for (Git g : GitRepoBuilder.getrepositoryGits()) {
 			try {
 				System.out.println(g.getRepository().getRepositoryState().toString());
@@ -128,9 +139,23 @@ public class MyController implements Initializable {
 		Date date = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy").parse(inputDate);
 		return new SimpleDateFormat(dateFormat).format(date);
 	}
+		
+	
+	//allows the user to change the root directory
+	@FXML
+	private void setRootDirectory() {
+	
+		DirectoryChooser chooser = new DirectoryChooser();
+		    chooser.setTitle("Set Root Directory");
+		    File defaultDirectory = new File(Core.getSearchRoot());
+		    chooser.setInitialDirectory(defaultDirectory);
+		    File selectedDirectory = chooser.showDialog(new Stage());
+		    Core.setSearchRoot(selectedDirectory.toString());
+	}
 
 	@FXML
 	private void ListRepos() {
+		GitRepoBuilder.init();
 		buildList();
 
 		enabled.setCellValueFactory(new PropertyValueFactory<Row, String>("enabled"));

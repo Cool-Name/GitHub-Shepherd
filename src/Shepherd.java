@@ -46,7 +46,7 @@ public class Shepherd extends Application {
        stage.show();
         
 
-       GitRepoBuilder.init();
+       
     
     }
 }

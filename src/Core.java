@@ -29,7 +29,7 @@ public class Core {
 	/** The credential provider. */
 	// Credentials used to access Github
 	private static CredentialsProvider cp = new UsernamePasswordCredentialsProvider(
-			"", "");
+			"user", "password");
 
 	/**
 	 * Gets the search root.
@@ -52,5 +52,10 @@ public class Core {
 	public static ArrayList<Git> getRepos()
 	{
 		return repos;
+	}
+	
+	public static void setSearchRoot(String _searchRoot)
+	{
+		searchRoot = _searchRoot;
 	}
 }

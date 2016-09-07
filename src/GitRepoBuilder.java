@@ -98,6 +98,15 @@ public class GitRepoBuilder {
 	 * repos under directory and builds different representations.
 	 */
 	public static void init() {
+		
+	 repositoryStrings = new ArrayList<String>();
+		
+	 repositoryRepos = new ArrayList<Repository>();
+		
+	 repositoryGits = new ArrayList<Git>();
+
+		
+		
 		FileWalker fw = new FileWalker();
 		fw.searchDirectory(new File(Core.getSearchRoot()), ".git");
 		repositoryStrings = fw.getResult();
