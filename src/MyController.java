@@ -14,8 +14,10 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.FetchResult;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -29,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
@@ -38,7 +41,6 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
@@ -92,27 +94,31 @@ public class MyController implements Initializable {
 		root.setExpanded(true);
 		serverList.setRoot(root);
 
+		// Places select all check box in header
 		CheckBox selectAll = new CheckBox();
-		// Use box as column header
 		enabled.setGraphic(selectAll);
 		selectAll.setSelected(true);
-		// Select all checkboxes
 		selectAll.setOnAction(e -> selectAllBoxes(e));
 
+		// removes empty table txt
+		data_table.setPlaceholder(new Label(""));
+
+		// sets size of progress indicator
 		progressCircle.setMaxSize(300, 300);
 	}
 
 	public void selectAllBoxes(ActionEvent e) {
 
-		// Iterate through all items in ObservableList
 		for (Row item : observableList) {
-			// changes checkbox to match state of selected box
+			// changes row of check boxes to match state of header check box
 			item.setEnabled(((CheckBox) e.getSource()).isSelected());
 		}
 
 	}
 
+	// creates table rows and builds an observable list
 	public void buildList() {
+
 		// clears the table
 		observableList = FXCollections.observableArrayList();
 
@@ -125,19 +131,55 @@ public class MyController implements Initializable {
 				String url = conf.getString("remote", "origin", "url");
 				List<Ref> branchesList = BranchHandler.getBranches(g);
 				List<String> branchNames = new ArrayList<String>();
+
+				String tag = "";
+				String latestTag = "";
 				String hashString = "";
 				String description = "";
 				String authorDate = "";
 				boolean upToDate = true;
+
 				ObjectId head = g.getRepository().resolve(Constants.HEAD);
 
+			
+//				 try {
+//					 List<Ref> call = new Git((Repository) g.fetch().call().getAdvertisedRef(Constants.HEAD)).tagList().call();
+//					 tag = call.get(call.size()-1).getName().substring(10);
+//					 
+//					System.out.println(call);
+//				} catch (Exception e2) {
+//					// TODO Auto-generated catch block
+//					//e2.printStackTrace();
+//				}
+		            				
+				
+				try {
+					List<Ref> call = new Git(g.getRepository()).tagList().call();
+					tag = call.get(call.size()-1).getName().substring(10);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					//e1.printStackTrace();
+				}
+				
+				
 				try {
 
 					RevWalk revWalk = new RevWalk(g.getRepository());
 					revWalk.markStart(revWalk.parseCommit(head));
 					RevCommit commit = revWalk.next();
 
+
+					
+					//System.out.println();
+					
+//					for (Ref ref : call) {
+//					    System.out.println("Tag: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
+//					}
+
+					// abbreviated hash code
 					hashString = commit.getId().abbreviate(7).name();
+
+					// gets the description
 					description = commit.getFullMessage();
 
 					// author
@@ -147,21 +189,10 @@ public class MyController implements Initializable {
 					// date time
 					authorDate = modifyDateLayout(committerIdent.getWhen().toString());
 
-					// attempting to check for new changes
-					// try {
-					// upToDate = !commit.getId().getName().equals(
-					// g.fetch().call().getAdvertisedRef(Constants.HEAD).getObjectId().getName());
-					// }catch (TransportException e) {
-					// System.out.println("Not allowed access to repository");
-					// } catch (Exception e) {
-					// e.printStackTrace();
-					// }
-
 					revWalk.close();
 
 				} catch (Exception e) {
-					System.err.println(e);
-
+					// System.err.println(e);
 				}
 
 				for (Ref r : branchesList) {
@@ -170,7 +201,7 @@ public class MyController implements Initializable {
 
 				observableList.add(
 						new Row(new SimpleBooleanProperty(upToDate), g.getRepository().getDirectory().getAbsolutePath(),
-								"v1.0", "v1.3", authorDate, branchNames, hashString, description, g));
+								tag, "v1.3", authorDate, branchNames, hashString, description, g));
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -240,26 +271,25 @@ public class MyController implements Initializable {
 
 				hash.setCellValueFactory(new PropertyValueFactory<Row, Hyperlink>("hash"));
 				description.setCellValueFactory(new PropertyValueFactory<Row, String>("description"));
-				
 
 				return null;
 			}
 		};
 
-		//progress indicator runs while task is running
-				progressCircle.visibleProperty().bind(task.runningProperty());
-				TableStackPane.setEffect(new GaussianBlur());
-				
-				new Thread(task).start();
+		// progress indicator runs while task is running
+		progressCircle.visibleProperty().bind(task.runningProperty());
+		TableStackPane.setEffect(new GaussianBlur());
 
-				task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-					@Override
-					public void handle(WorkerStateEvent t) {
-						data_table.setItems(observableList);
-						//removes blur effect
-						TableStackPane.setEffect(null);
-					}
-				});
+		new Thread(task).start();
+
+		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+				data_table.setItems(observableList);
+				// removes blur effect
+				TableStackPane.setEffect(null);
+			}
+		});
 	}
 
 	@FXML
@@ -295,8 +325,8 @@ public class MyController implements Initializable {
 				return null;
 			}
 		};
-		
-		//progress indicator runs while task is running
+
+		// progress indicator runs while task is running
 		progressCircle.visibleProperty().bind(task.runningProperty());
 		TableStackPane.setEffect(new GaussianBlur());
 		new Thread(task).start();
@@ -304,14 +334,14 @@ public class MyController implements Initializable {
 		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent t) {
-				
-				//updates the new list
+
+				// updates the new list
 				buildList();
-				
-				//sets the list
+
+				// sets the list
 				data_table.setItems(observableList);
-				
-				//removes blur effect
+
+				// removes blur effect
 				TableStackPane.setEffect(null);
 			}
 		});

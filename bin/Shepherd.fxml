@@ -17,86 +17,128 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MyController">
-   <top>
-      <VBox prefHeight="21.0" prefWidth="1400.0" BorderPane.alignment="CENTER">
-         <children>
-            <MenuBar>
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem fx:id="fileChangeDirectory" mnemonicParsing="false" onAction="#setRootDirectory" text="Change Directory" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </children>
-      </VBox>
-   </top>
-   <center>
-      <VBox prefHeight="704.0" prefWidth="315.0" BorderPane.alignment="CENTER">
-         <children>
-            <FlowPane prefHeight="64.0" prefWidth="1128.0">
-               <children>
-                  <Button fx:id="listRepoBtn" alignment="BASELINE_CENTER" contentDisplay="TOP" layoutX="214.0" layoutY="10.0" mnemonicParsing="false" onAction="#ListRepos" prefHeight="83.0" prefWidth="124.0" text="Scan Repos" textAlignment="CENTER">
-                     <graphic>
-                        <ImageView fitHeight="38.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@images/server-scan.png" />
-                           </image>
-                        </ImageView>
-                     </graphic></Button>
-                  <Button contentDisplay="TOP" layoutX="278.0" layoutY="10.0" mnemonicParsing="false" onAction="#pullSelectedRepos" prefHeight="81.0" prefWidth="134.0" text="Pull">
-                     <graphic>
-                        <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@images/server-upgrade.png" />
-                           </image>
-                        </ImageView>
-                     </graphic></Button>
-               </children>
-            </FlowPane>
-            <StackPane VBox.vgrow="ALWAYS">
-               <children>
-                  <StackPane fx:id="TableStackPane" prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="data_table" editable="true" prefHeight="683.0" prefWidth="1300.0" stylesheets="@table.css">
-                          <columns>
-                            <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" sortable="false" />
-                            <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="401.0" text="Repositories" />
-                              <TableColumn fx:id="current_version" maxWidth="300.0" minWidth="50.0" prefWidth="130.0" text="Current Version" />
-                              <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="137.0" text="Latest Version" />
-                              <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="160.0" text="Date" />
-                              <TableColumn fx:id="hash" maxWidth="900.0" minWidth="50.0" prefWidth="100.0" text="Hash" />
-                              <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="600.0" text="Description" />
-                          </columns>
-                        </TableView>
-                     </children></StackPane>
-                  <ProgressIndicator fx:id="progressCircle" prefHeight="95.0" prefWidth="1128.0" visible="false" />
-               </children>
-            </StackPane>
-         </children>
-      </VBox>
-   </center>
-   <left>
-      <VBox prefHeight="768.0" prefWidth="272.0">
-         <children>
-            <HBox prefHeight="42.0" prefWidth="272.0" VBox.vgrow="NEVER">
-               <children>
-                  <Button fx:id="addServer" mnemonicParsing="false" onAction="#AddServer" prefHeight="42.0" prefWidth="42.0" HBox.hgrow="NEVER">
-                     <graphic>
-                        <ImageView>
-                           <image>
-                              <Image url="@images/plus.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <TextField fx:id="serverTextField" onAction="#AddServer" prefHeight="42.0" prefWidth="227.0" HBox.hgrow="NEVER" />
-               </children>
-            </HBox>
-            <TreeView fx:id="serverList" onContextMenuRequested="#ShowContextMenu" VBox.vgrow="ALWAYS" />
-         </children>
-      </VBox>
-   </left>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity"
+	minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+	prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="MyController">
+	<top>
+		<VBox prefHeight="21.0" prefWidth="1400.0" BorderPane.alignment="CENTER">
+			<children>
+				<MenuBar>
+					<menus>
+						<Menu mnemonicParsing="false" text="File">
+							<items>
+								<MenuItem fx:id="fileChangeDirectory" mnemonicParsing="false"
+									onAction="#setRootDirectory" text="Select Directory" />
+							</items>
+						</Menu>
+					</menus>
+				</MenuBar>
+			</children>
+		</VBox>
+	</top>
+	<center>
+		<VBox prefHeight="704.0" prefWidth="315.0" BorderPane.alignment="CENTER">
+			<children>
+				<FlowPane prefHeight="64.0" prefWidth="1128.0">
+					<children>
+						<Button fx:id="selectDirectoryBtn" onAction="#setRootDirectory"
+							alignment="BASELINE_CENTER" contentDisplay="TOP" mnemonicParsing="false"
+							prefHeight="83.0" prefWidth="124.0" text="Select Directory"
+							textAlignment="CENTER">
+							<graphic>
+								<ImageView fitHeight="38.0" fitWidth="38.0"
+									pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@images/folder.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+						<Button fx:id="listRepoBtn" alignment="BASELINE_CENTER"
+							contentDisplay="TOP" layoutX="214.0" layoutY="10.0"
+							mnemonicParsing="false" onAction="#ListRepos" prefHeight="83.0"
+							prefWidth="124.0" text="Scan Repos" textAlignment="CENTER">
+							<graphic>
+								<ImageView fitHeight="38.0" fitWidth="38.0"
+									pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@images/server-scan.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+						<Button contentDisplay="TOP" layoutX="278.0" layoutY="10.0"
+							mnemonicParsing="false" onAction="#pullSelectedRepos" prefHeight="81.0"
+							prefWidth="134.0" text="Pull">
+							<graphic>
+								<ImageView fitHeight="48.0" fitWidth="48.0"
+									pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@images/server-upgrade.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+					</children>
+				</FlowPane>
+				<StackPane VBox.vgrow="ALWAYS">
+					<children>
+						<StackPane fx:id="TableStackPane" prefHeight="150.0"
+							prefWidth="200.0">
+							<children>
+								<TableView fx:id="data_table" editable="true"
+									prefHeight="683.0" prefWidth="1300.0" stylesheets="@table.css">
+									
+									<columns>
+										<TableColumn fx:id="enabled" maxWidth="50.0"
+											minWidth="26.0" prefWidth="32.0" resizable="false" sortable="false" />
+										<TableColumn fx:id="repositories" maxWidth="1000.0"
+											minWidth="50.0" prefWidth="401.0" text="Repositories" />
+										<TableColumn fx:id="current_version" maxWidth="300.0"
+											minWidth="50.0" prefWidth="130.0" text="Current Version" />
+										<TableColumn fx:id="latest_version" maxWidth="300.0"
+											minWidth="50.0" prefWidth="137.0" text="Latest Version" />
+										<TableColumn fx:id="last_pulled" maxWidth="300.0"
+											minWidth="50.0" prefWidth="160.0" text="Date" />
+										<TableColumn fx:id="hash" maxWidth="900.0"
+											minWidth="50.0" prefWidth="100.0" text="Hash" />
+										<TableColumn fx:id="description" maxWidth="1500.0"
+											minWidth="50.0" prefWidth="600.0" text="Description" />
+									</columns>
+									
+								</TableView>
+							</children>
+						</StackPane>
+						<ProgressIndicator fx:id="progressCircle"
+							prefHeight="95.0" prefWidth="1128.0" visible="false" />
+					</children>
+				</StackPane>
+			</children>
+		</VBox>
+	</center>
+	<left>
+		<VBox prefHeight="768.0" prefWidth="272.0">
+			<children>
+				<HBox prefHeight="42.0" prefWidth="272.0" VBox.vgrow="NEVER">
+					<children>
+						<Button fx:id="addServer" mnemonicParsing="false" onAction="#AddServer"
+							prefHeight="42.0" prefWidth="42.0" HBox.hgrow="NEVER">
+							<graphic>
+								<ImageView>
+									<image>
+										<Image url="@images/plus.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+						<TextField fx:id="serverTextField" onAction="#AddServer"
+							prefHeight="42.0" prefWidth="227.0" HBox.hgrow="NEVER" />
+					</children>
+				</HBox>
+				<TreeView fx:id="serverList" onContextMenuRequested="#ShowContextMenu"
+					VBox.vgrow="ALWAYS" />
+			</children>
+		</VBox>
+	</left>
 </BorderPane>
