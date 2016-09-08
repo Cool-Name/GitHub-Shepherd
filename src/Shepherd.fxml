@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MyController">
@@ -55,18 +56,25 @@
                      </graphic></Button>
                </children>
             </FlowPane>
-            <TableView fx:id="data_table" editable="true" prefHeight="683.0" prefWidth="1300.0" stylesheets="@table.css" VBox.vgrow="ALWAYS">
-              <columns>
-                <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" sortable="false" />
-                <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="401.0" text="Repositories" />
-                  <TableColumn fx:id="current_version" maxWidth="300.0" minWidth="50.0" prefWidth="130.0" text="Current Version" />
-                  <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="137.0" text="Latest Version" />
-                  <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="160.0" text="Date" />
-                  <TableColumn fx:id="hash" maxWidth="900.0" minWidth="50.0" prefWidth="100.0" text="Hash" />
-                  <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="600.0" text="Description" />
-              </columns>
-            </TableView>
-            <ProgressIndicator fx:id="progressCircle" prefHeight="0.0" prefWidth="1128.0" visible="false" />
+            <StackPane VBox.vgrow="ALWAYS">
+               <children>
+                  <StackPane fx:id="TableStackPane" prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="data_table" editable="true" prefHeight="683.0" prefWidth="1300.0" stylesheets="@table.css">
+                          <columns>
+                            <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" sortable="false" />
+                            <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="401.0" text="Repositories" />
+                              <TableColumn fx:id="current_version" maxWidth="300.0" minWidth="50.0" prefWidth="130.0" text="Current Version" />
+                              <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="137.0" text="Latest Version" />
+                              <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="160.0" text="Date" />
+                              <TableColumn fx:id="hash" maxWidth="900.0" minWidth="50.0" prefWidth="100.0" text="Hash" />
+                              <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="600.0" text="Description" />
+                          </columns>
+                        </TableView>
+                     </children></StackPane>
+                  <ProgressIndicator fx:id="progressCircle" prefHeight="95.0" prefWidth="1128.0" visible="false" />
+               </children>
+            </StackPane>
          </children>
       </VBox>
    </center>

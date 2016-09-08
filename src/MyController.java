@@ -14,17 +14,18 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
@@ -37,6 +38,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
@@ -71,6 +75,8 @@ public class MyController implements Initializable {
 	MenuItem fileChangeDirectory;
 	@FXML
 	ProgressIndicator progressCircle;
+	@FXML
+	StackPane TableStackPane;
 
 	// sets format for last modified column
 	final String dateFormat = "dd/MM/yyyy hh:mm a";
@@ -85,33 +91,36 @@ public class MyController implements Initializable {
 		root = new TreeItem<String>("Servers");
 		root.setExpanded(true);
 		serverList.setRoot(root);
-		
-		  CheckBox selectAll = new CheckBox();
-		  //Use box as column header
-          enabled.setGraphic(selectAll);
-          selectAll.setSelected(true);
-          //Select all checkboxes
-          selectAll.setOnAction(e -> selectAllBoxes(e));
+
+		CheckBox selectAll = new CheckBox();
+		// Use box as column header
+		enabled.setGraphic(selectAll);
+		selectAll.setSelected(true);
+		// Select all checkboxes
+		selectAll.setOnAction(e -> selectAllBoxes(e));
+
+		progressCircle.setMaxSize(300, 300);
 	}
 
-	 public void selectAllBoxes(ActionEvent e) {
+	public void selectAllBoxes(ActionEvent e) {
 
-         //Iterate through all items in ObservableList
-         for (Row item : observableList) {
-             //changes checkbox to match state of selected box
-             item.setEnabled(((CheckBox) e.getSource()).isSelected());
-         }
+		// Iterate through all items in ObservableList
+		for (Row item : observableList) {
+			// changes checkbox to match state of selected box
+			item.setEnabled(((CheckBox) e.getSource()).isSelected());
+		}
 
-     }
+	}
+
 	public void buildList() {
-		//clears the table
-		observableList.clear();
+		// clears the table
+		observableList = FXCollections.observableArrayList();
 
 		for (Git g : GitRepoBuilder.getrepositoryGits()) {
 			try {
-								
-				//System.out.println(g.getRepository().getRepositoryState().toString());
-			
+
+				// System.out.println(g.getRepository().getRepositoryState().toString());
+
 				Config conf = g.getRepository().getConfig();
 				String url = conf.getString("remote", "origin", "url");
 				List<Ref> branchesList = BranchHandler.getBranches(g);
@@ -120,41 +129,41 @@ public class MyController implements Initializable {
 				String description = "";
 				String authorDate = "";
 				boolean upToDate = true;
-				ObjectId head= g.getRepository().resolve(Constants.HEAD);
-				
+				ObjectId head = g.getRepository().resolve(Constants.HEAD);
+
 				try {
-					
-					
+
 					RevWalk revWalk = new RevWalk(g.getRepository());
 					revWalk.markStart(revWalk.parseCommit(head));
 					RevCommit commit = revWalk.next();
-		
+
 					hashString = commit.getId().abbreviate(7).name();
 					description = commit.getFullMessage();
-					
+
 					// author
 					PersonIdent authorIdent = commit.getAuthorIdent();
 					// committer
 					PersonIdent committerIdent = commit.getCommitterIdent();
 					// date time
 					authorDate = modifyDateLayout(committerIdent.getWhen().toString());
-					
-					//attempting to check for new changes
-//					try {
-//					upToDate = !commit.getId().getName().equals( g.fetch().call().getAdvertisedRef(Constants.HEAD).getObjectId().getName());
-//					}catch (TransportException e) {
-//						System.out.println("Not allowed access to repository");
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-					
+
+					// attempting to check for new changes
+					// try {
+					// upToDate = !commit.getId().getName().equals(
+					// g.fetch().call().getAdvertisedRef(Constants.HEAD).getObjectId().getName());
+					// }catch (TransportException e) {
+					// System.out.println("Not allowed access to repository");
+					// } catch (Exception e) {
+					// e.printStackTrace();
+					// }
+
 					revWalk.close();
 
 				} catch (Exception e) {
 					System.err.println(e);
-				
+
 				}
-				
+
 				for (Ref r : branchesList) {
 					branchNames.add(r.getName());
 				}
@@ -178,7 +187,9 @@ public class MyController implements Initializable {
 	// allows the user to change the root directory
 	@FXML
 	private void setRootDirectory() {
-		observableList.clear();
+		observableList = FXCollections.observableArrayList();
+		data_table.setItems(observableList);
+
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle("Set Root Directory");
 		File defaultDirectory = new File(Core.getSearchRoot());
@@ -189,46 +200,66 @@ public class MyController implements Initializable {
 
 	@FXML
 	private void ListRepos() {
-		// progressCircle.setVisible(true);
-		// progressCircle.setMinSize(800, 800);
 
-		GitRepoBuilder.init();
-		buildList();
-
-		enabled.setCellValueFactory(param -> param.getValue().enabledProperty());
-		enabled.setCellFactory(CheckBoxTableCell.forTableColumn(enabled));
-		repositories.setCellValueFactory(new PropertyValueFactory<Row, String>("repositories"));
-		current_version.setCellValueFactory(new PropertyValueFactory<Row, String>("current_version"));
-		latest_version.setCellValueFactory(new PropertyValueFactory<Row, String>("latest_version"));
-		last_pulled.setCellValueFactory(new PropertyValueFactory<Row, String>("last_pulled"));
-
-		// allows sorting by date
-		last_pulled.setComparator(new Comparator<String>() {
+		Task task = new Task<Void>() {
 			@Override
-			public int compare(String t, String t1) {
-				SimpleDateFormat format = new SimpleDateFormat(dateFormat);
-				Date d1;
-				Date d2;
-				try {
-					d1 = format.parse(t);
-				} catch (Exception e) {
-					d1 = new Date(Long.MIN_VALUE);
-				}
+			public Void call() {
 
-				try {
-					d2 = format.parse(t1);
-				} catch (Exception e) {
-					d2 = new Date(Long.MIN_VALUE);
-				}
+				GitRepoBuilder.init();
+				buildList();
 
-				return Long.compare(d1.getTime(), d2.getTime());
+				enabled.setCellValueFactory(param -> param.getValue().enabledProperty());
+				enabled.setCellFactory(CheckBoxTableCell.forTableColumn(enabled));
+				repositories.setCellValueFactory(new PropertyValueFactory<Row, String>("repositories"));
+				current_version.setCellValueFactory(new PropertyValueFactory<Row, String>("current_version"));
+				latest_version.setCellValueFactory(new PropertyValueFactory<Row, String>("latest_version"));
+				last_pulled.setCellValueFactory(new PropertyValueFactory<Row, String>("last_pulled"));
+
+				// allows sorting by date
+				last_pulled.setComparator(new Comparator<String>() {
+					@Override
+					public int compare(String t, String t1) {
+						SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+						Date d1;
+						Date d2;
+						try {
+							d1 = format.parse(t);
+						} catch (Exception e) {
+							d1 = new Date(Long.MIN_VALUE);
+						}
+
+						try {
+							d2 = format.parse(t1);
+						} catch (Exception e) {
+							d2 = new Date(Long.MIN_VALUE);
+						}
+
+						return Long.compare(d1.getTime(), d2.getTime());
+					}
+				});
+
+				hash.setCellValueFactory(new PropertyValueFactory<Row, Hyperlink>("hash"));
+				description.setCellValueFactory(new PropertyValueFactory<Row, String>("description"));
+				
+
+				return null;
 			}
-		});
+		};
 
-		hash.setCellValueFactory(new PropertyValueFactory<Row, Hyperlink>("hash"));
-		description.setCellValueFactory(new PropertyValueFactory<Row, String>("description"));
+		//progress indicator runs while task is running
+				progressCircle.visibleProperty().bind(task.runningProperty());
+				TableStackPane.setEffect(new GaussianBlur());
+				
+				new Thread(task).start();
 
-		data_table.setItems(observableList);
+				task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+					@Override
+					public void handle(WorkerStateEvent t) {
+						data_table.setItems(observableList);
+						//removes blur effect
+						TableStackPane.setEffect(null);
+					}
+				});
 	}
 
 	@FXML
@@ -237,15 +268,53 @@ public class MyController implements Initializable {
 	}
 
 	@FXML
-	private void pullSelectedRepos() {
-		// pulls all repos that have a checkbox next to them
-		Puller p = new Puller();
-		for (Row r : observableList) {
-			if (r.getEnabled() == true) {
-				PullThread pt = new PullThread(r.getGit());
-				pt.start();
+	private void pullSelectedRepos() throws InterruptedException {
+
+		Task<Void> task = new Task<Void>() {
+			@Override
+			public Void call() throws InterruptedException {
+
+				// pulls all repos that have a checkbox next to them
+				Puller p = new Puller();
+
+				List<PullThread> threads = new ArrayList<PullThread>();
+
+				for (Row r : observableList) {
+					if (r.getEnabled() == true) {
+						PullThread pt = new PullThread(r.getGit());
+						pt.start();
+						threads.add(pt);
+					}
+				}
+
+				// waits for threads to finish
+				for (int i = 0; i < threads.size(); i++) {
+					threads.get(i).join();
+				}
+
+				return null;
 			}
-		}
+		};
+		
+		//progress indicator runs while task is running
+		progressCircle.visibleProperty().bind(task.runningProperty());
+		TableStackPane.setEffect(new GaussianBlur());
+		new Thread(task).start();
+
+		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+				
+				//updates the new list
+				buildList();
+				
+				//sets the list
+				data_table.setItems(observableList);
+				
+				//removes blur effect
+				TableStackPane.setEffect(null);
+			}
+		});
 	}
 
 	@FXML
@@ -260,12 +329,5 @@ public class MyController implements Initializable {
 			// clears the text from the server textField
 			serverTextField.clear();
 		}
-	}
-	
-	private static RevCommit getHeadCommit(Repository repository) throws Exception {
-	    try (Git git = new Git(repository)) {
-	        Iterable<RevCommit> history = git.log().setMaxCount(1).call();
-	        return history.iterator().next();
-	    }
 	}
 }
