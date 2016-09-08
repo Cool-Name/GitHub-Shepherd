@@ -3,8 +3,10 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -14,10 +16,10 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevObject;
+import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.transport.FetchResult;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -129,7 +131,7 @@ public class MyController implements Initializable {
 				List<Ref> branchesList = BranchHandler.getBranches(g);
 				List<String> branchNames = new ArrayList<String>();
 				ObjectId head = g.getRepository().resolve(Constants.HEAD);
-
+				
 				// initialises variables
 				String tag = "";
 				String latestTag = "";
@@ -139,27 +141,27 @@ public class MyController implements Initializable {
 				PersonIdent committerIdent;
 				PersonIdent authorIdent;
 				boolean upToDate = true;
-
-				// try {
-				// List<Ref> call = new Git((Repository)
-				// g.fetch().call().getAdvertisedRef(Constants.HEAD)).tagList().call();
-				// tag = call.get(call.size()-1).getName().substring(10);
-				//
-				// System.out.println(call);
-				// } catch (Exception e2) {
-				// // TODO Auto-generated catch block
-				// //e2.printStackTrace();
-				// }
+				
 
 				try {
-					// gets the current version tag
-					List<Ref> call = new Git(g.getRepository()).tagList().call();
-					tag = call.get(call.size() - 1).getName().substring(10);
-
+					tag = Git.wrap(g.getRepository()).describe().setTarget(ObjectId.fromString(head.getName())).call();							 
 				} catch (Exception e1) {
 					System.err.println("Tag not found: " + g.getRepository());
 				}
-
+			
+//				try {
+//					Collection<Ref> refs = g.lsRemoteRepository().call();
+//					
+//			        for (Ref ref : refs) {
+//			            System.out.println("Ref: " + ref);
+//			        }
+//
+//					latestTag = Git.wrap(g.getRepository()).describe().setTarget(ObjectId.fromString(head.getName())).call();							 
+//				} catch (Exception e1) {
+//					System.err.println("Tag not found: " + g.getRepository());
+//				}
+				
+				
 				try {
 
 					RevWalk revWalk = new RevWalk(g.getRepository());
