@@ -55,13 +55,13 @@
                      </graphic></Button>
                </children>
             </FlowPane>
-            <TableView fx:id="data_table" editable="true" prefHeight="683.0" prefWidth="1300.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="data_table" editable="true" prefHeight="683.0" prefWidth="1300.0" stylesheets="@table.css" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="enabled" maxWidth="50.0" minWidth="26.0" prefWidth="32.0" resizable="false" sortable="false" />
-                <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="400.0" text="Repositories" />
+                <TableColumn fx:id="repositories" maxWidth="1000.0" minWidth="50.0" prefWidth="401.0" text="Repositories" />
                   <TableColumn fx:id="current_version" maxWidth="300.0" minWidth="50.0" prefWidth="130.0" text="Current Version" />
                   <TableColumn fx:id="latest_version" maxWidth="300.0" minWidth="50.0" prefWidth="137.0" text="Latest Version" />
-                  <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="160.0" text="Last Pulled" />
+                  <TableColumn fx:id="last_pulled" maxWidth="300.0" minWidth="50.0" prefWidth="160.0" text="Date" />
                   <TableColumn fx:id="hash" maxWidth="900.0" minWidth="50.0" prefWidth="100.0" text="Hash" />
                   <TableColumn fx:id="description" maxWidth="1500.0" minWidth="50.0" prefWidth="600.0" text="Description" />
               </columns>

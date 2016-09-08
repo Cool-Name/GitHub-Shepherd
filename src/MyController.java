@@ -11,17 +11,22 @@ import java.util.ResourceBundle;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
@@ -80,48 +85,82 @@ public class MyController implements Initializable {
 		root = new TreeItem<String>("Servers");
 		root.setExpanded(true);
 		serverList.setRoot(root);
+		
+		  CheckBox selectAll = new CheckBox();
+		  //Use box as column header
+          enabled.setGraphic(selectAll);
+          selectAll.setSelected(true);
+          //Select all checkboxes
+          selectAll.setOnAction(e -> selectAllBoxes(e));
 	}
 
+	 public void selectAllBoxes(ActionEvent e) {
+
+         //Iterate through all items in ObservableList
+         for (Row item : observableList) {
+             //changes checkbox to match state of selected box
+             item.setEnabled(((CheckBox) e.getSource()).isSelected());
+         }
+
+     }
 	public void buildList() {
 		//clears the table
 		observableList.clear();
 
 		for (Git g : GitRepoBuilder.getrepositoryGits()) {
 			try {
-				System.out.println(g.getRepository().getRepositoryState().toString());
+								
+				//System.out.println(g.getRepository().getRepositoryState().toString());
+			
 				Config conf = g.getRepository().getConfig();
 				String url = conf.getString("remote", "origin", "url");
 				List<Ref> branchesList = BranchHandler.getBranches(g);
 				List<String> branchNames = new ArrayList<String>();
-				String hashString = (g.getRepository().resolve("HEAD") == null) ? ""
-						: "" + g.getRepository().resolve("HEAD").abbreviate(7).name();
-
-				String description = g.getRepository().readCommitEditMsg();
-				String authorDate;
-
+				String hashString = "";
+				String description = "";
+				String authorDate = "";
+				boolean upToDate = true;
+				ObjectId head= g.getRepository().resolve(Constants.HEAD);
+				
 				try {
+					
+					
 					RevWalk revWalk = new RevWalk(g.getRepository());
-					revWalk.markStart(revWalk.parseCommit(g.getRepository().resolve(Constants.HEAD)));
+					revWalk.markStart(revWalk.parseCommit(head));
 					RevCommit commit = revWalk.next();
-					revWalk.close();
-
+		
+					hashString = commit.getId().abbreviate(7).name();
+					description = commit.getFullMessage();
+					
 					// author
 					PersonIdent authorIdent = commit.getAuthorIdent();
 					// committer
 					PersonIdent committerIdent = commit.getCommitterIdent();
 					// date time
 					authorDate = modifyDateLayout(committerIdent.getWhen().toString());
+					
+					//attempting to check for new changes
+//					try {
+//					upToDate = !commit.getId().getName().equals( g.fetch().call().getAdvertisedRef(Constants.HEAD).getObjectId().getName());
+//					}catch (TransportException e) {
+//						System.out.println("Not allowed access to repository");
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+					
+					revWalk.close();
 
 				} catch (Exception e) {
-					authorDate = "";
+					System.err.println(e);
+				
 				}
-
+				
 				for (Ref r : branchesList) {
 					branchNames.add(r.getName());
 				}
 
 				observableList.add(
-						new Row(new SimpleBooleanProperty(true), g.getRepository().getDirectory().getAbsolutePath(),
+						new Row(new SimpleBooleanProperty(upToDate), g.getRepository().getDirectory().getAbsolutePath(),
 								"v1.0", "v1.3", authorDate, branchNames, hashString, description, g));
 
 			} catch (Exception e) {
@@ -139,6 +178,7 @@ public class MyController implements Initializable {
 	// allows the user to change the root directory
 	@FXML
 	private void setRootDirectory() {
+		observableList.clear();
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle("Set Root Directory");
 		File defaultDirectory = new File(Core.getSearchRoot());
@@ -221,4 +261,12 @@ public class MyController implements Initializable {
 			serverTextField.clear();
 		}
 	}
+	
+	private static RevCommit getHeadCommit(Repository repository) throws Exception {
+	    try (Git git = new Git(repository)) {
+	        Iterable<RevCommit> history = git.log().setMaxCount(1).call();
+	        return history.iterator().next();
+	    }
+	}
+	
 }
