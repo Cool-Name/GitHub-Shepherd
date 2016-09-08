@@ -4,8 +4,10 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.InvalidTagNameException;
 import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -37,7 +39,8 @@ public class TagHandler {
 		GitRepoBuilder.init();
 
 		TagHandler th = new TagHandler();
-		th.listAllTagsForAllGits();
+		getTagFromRemote("https://github.com/Cool-Name/Test-Repo");
+		//th.listAllTagsForAllGits();
 	}
 
 	/**
@@ -212,6 +215,29 @@ public class TagHandler {
 			System.out.println("Created/moved tag " + t + " to repository at " + destG.getRepository().getDirectory());
 			rev.close();
 		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static void getTagFromRemote(String uri)	//TODO: Parse/check URI with regex
+	{
+		 try {
+			Collection<Ref> refs = Git.lsRemoteRepository()
+			            .setHeads(false)
+			            .setTags(true)
+			            .setRemote(uri)
+			            .call();
+			for (Ref ref : refs) {
+	            System.out.println("Ref: " + ref);
+	        }
+		} catch (InvalidRemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GitAPIException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

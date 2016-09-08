@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/Ben Templeton/Downloads/jsch-0.1.53.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ben Templeton/Downloads/org.eclipse.jgit-4.4.1.201607150455-r.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ben Templeton/Downloads/slf4j-1.7.21/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<accessrules>
+			<accessrule kind="accessible" pattern="javafx/**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="com.jcraft.jsch_0.1.31 (1).jar"/>
+	<classpathentry kind="lib" path="org.eclipse.jgit-4.4.1.201607150455-r (2).jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
