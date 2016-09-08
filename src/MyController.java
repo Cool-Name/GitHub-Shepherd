@@ -84,6 +84,7 @@ public class MyController implements Initializable {
 	final String dateFormat = "dd/MM/yyyy hh:mm a";
 
 	TreeItem<String> root;
+	
 	ObservableList<Row> observableList = FXCollections.observableArrayList();
 
 	// this code is run on startup
@@ -106,11 +107,11 @@ public class MyController implements Initializable {
 		// sets size of progress indicator
 		progressCircle.setMaxSize(300, 300);
 	}
-
+	
+	// changes row of check boxes to match state of header check box
 	public void selectAllBoxes(ActionEvent e) {
 
 		for (Row item : observableList) {
-			// changes row of check boxes to match state of header check box
 			item.setEnabled(((CheckBox) e.getSource()).isSelected());
 		}
 
@@ -118,98 +119,99 @@ public class MyController implements Initializable {
 
 	// creates table rows and builds an observable list
 	public void buildList() {
-
 		// clears the table
 		observableList = FXCollections.observableArrayList();
 
 		for (Git g : GitRepoBuilder.getrepositoryGits()) {
 			try {
-
-				// System.out.println(g.getRepository().getRepositoryState().toString());
-
 				Config conf = g.getRepository().getConfig();
 				String url = conf.getString("remote", "origin", "url");
 				List<Ref> branchesList = BranchHandler.getBranches(g);
 				List<String> branchNames = new ArrayList<String>();
+				ObjectId head = g.getRepository().resolve(Constants.HEAD);
 
+				// initialises variables
 				String tag = "";
 				String latestTag = "";
 				String hashString = "";
 				String description = "";
 				String authorDate = "";
+				PersonIdent committerIdent;
+				PersonIdent authorIdent;
 				boolean upToDate = true;
 
-				ObjectId head = g.getRepository().resolve(Constants.HEAD);
+				// try {
+				// List<Ref> call = new Git((Repository)
+				// g.fetch().call().getAdvertisedRef(Constants.HEAD)).tagList().call();
+				// tag = call.get(call.size()-1).getName().substring(10);
+				//
+				// System.out.println(call);
+				// } catch (Exception e2) {
+				// // TODO Auto-generated catch block
+				// //e2.printStackTrace();
+				// }
 
-			
-//				 try {
-//					 List<Ref> call = new Git((Repository) g.fetch().call().getAdvertisedRef(Constants.HEAD)).tagList().call();
-//					 tag = call.get(call.size()-1).getName().substring(10);
-//					 
-//					System.out.println(call);
-//				} catch (Exception e2) {
-//					// TODO Auto-generated catch block
-//					//e2.printStackTrace();
-//				}
-		            				
-				
 				try {
+					// gets the current version tag
 					List<Ref> call = new Git(g.getRepository()).tagList().call();
-					tag = call.get(call.size()-1).getName().substring(10);
+					tag = call.get(call.size() - 1).getName().substring(10);
+
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					//e1.printStackTrace();
+					System.err.println("Tag not found: " + g.getRepository());
 				}
-				
-				
+
 				try {
 
 					RevWalk revWalk = new RevWalk(g.getRepository());
 					revWalk.markStart(revWalk.parseCommit(head));
 					RevCommit commit = revWalk.next();
 
-
-					
-					//System.out.println();
-					
-//					for (Ref ref : call) {
-//					    System.out.println("Tag: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
-//					}
-
-					// abbreviated hash code
+					// abbreviated commit hash
 					hashString = commit.getId().abbreviate(7).name();
 
 					// gets the description
 					description = commit.getFullMessage();
 
-					// author
-					PersonIdent authorIdent = commit.getAuthorIdent();
-					// committer
-					PersonIdent committerIdent = commit.getCommitterIdent();
-					// date time
-					authorDate = modifyDateLayout(committerIdent.getWhen().toString());
+					try {
+						// author
+						authorIdent = commit.getAuthorIdent();
+					} catch (Exception e2) {
+						System.err.println("Date not found" + commit.name());
+					}
+
+					try {
+
+						// committer
+						committerIdent = commit.getCommitterIdent();
+
+						// date time
+						authorDate = modifyDateLayout(committerIdent.getWhen().toString());
+					} catch (Exception e1) {
+						System.err.println("Committer not found: " + commit.name());
+					}
 
 					revWalk.close();
 
 				} catch (Exception e) {
-					// System.err.println(e);
+					System.err.println("There was an error in the RevWalk: " + g.getRepository());
 				}
 
 				for (Ref r : branchesList) {
 					branchNames.add(r.getName());
 				}
 
+				//builds row
 				observableList.add(
 						new Row(new SimpleBooleanProperty(upToDate), g.getRepository().getDirectory().getAbsolutePath(),
 								tag, "v1.3", authorDate, branchNames, hashString, description, g));
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("There was an error while creating the row");				
 			}
 		}
 	}
 
+	// modifies the git date string to a recogniseable state
 	private String modifyDateLayout(String inputDate) throws ParseException {
 		Date date = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy").parse(inputDate);
 		return new SimpleDateFormat(dateFormat).format(date);
@@ -218,15 +220,20 @@ public class MyController implements Initializable {
 	// allows the user to change the root directory
 	@FXML
 	private void setRootDirectory() {
-		observableList = FXCollections.observableArrayList();
-		data_table.setItems(observableList);
 
-		DirectoryChooser chooser = new DirectoryChooser();
-		chooser.setTitle("Set Root Directory");
-		File defaultDirectory = new File(Core.getSearchRoot());
-		chooser.setInitialDirectory(defaultDirectory);
-		File selectedDirectory = chooser.showDialog(new Stage());
-		Core.setSearchRoot(selectedDirectory.toString());
+		try {
+			observableList = FXCollections.observableArrayList();
+			data_table.setItems(observableList);
+
+			DirectoryChooser chooser = new DirectoryChooser();
+			chooser.setTitle("Set Root Directory");
+			File defaultDirectory = new File(Core.getSearchRoot());
+			chooser.setInitialDirectory(defaultDirectory);
+			File selectedDirectory = chooser.showDialog(new Stage());
+			Core.setSearchRoot(selectedDirectory.toString());
+		} catch (Exception e) {
+			System.err.println("There was a problem choosing that directory");
+		}
 	}
 
 	@FXML
@@ -321,7 +328,6 @@ public class MyController implements Initializable {
 				for (int i = 0; i < threads.size(); i++) {
 					threads.get(i).join();
 				}
-
 				return null;
 			}
 		};
