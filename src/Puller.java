@@ -130,9 +130,12 @@ class PullThread extends Thread {
 		try {
 			g.pull().setCredentialsProvider(Core.getCreds()).call();
 			CommitHandler.printDifferencesToLast(g);
+			MyController.finishedThreads.incrementAndGet();
 		} catch (TransportException e) {
 			System.out.println("Not allowed access to repository");
+			MyController.finishedThreads.incrementAndGet();
 		} catch (Exception e) {
+			MyController.finishedThreads.incrementAndGet();
 			e.printStackTrace();
 		}
 	}
