@@ -11,18 +11,15 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class GitRepoBuilder.
  */
 /*
- * A class that takes the git-containing repositories 
- * and constructs the relevant git objects. Also handles
- * ref objects etc.
- * Additionally, it should cache the repo directories and
- * important information like the relevant URL and log
- * data.
+ * A class that takes the git-containing repositories and constructs the
+ * relevant git objects. Also handles ref objects etc. Additionally, it should
+ * cache the repo directories and important information like the relevant URL
+ * and log data.
  * 
  * TODO Determine whether or not this should be static... Probably
  * 
@@ -32,10 +29,10 @@ public class GitRepoBuilder {
 	/** The repository strings. */
 	// Different representations of repository systems
 	private static ArrayList<String> repositoryStrings = new ArrayList<String>();
-	
+
 	/** The repository repos. */
 	private static ArrayList<Repository> repositoryRepos = new ArrayList<Repository>();
-	
+
 	/** The repository gits. */
 	private static ArrayList<Git> repositoryGits = new ArrayList<Git>();
 
@@ -64,7 +61,8 @@ public class GitRepoBuilder {
 	/**
 	 * Sets the repository repos.
 	 *
-	 * @param reps the new repository repos
+	 * @param reps
+	 *            the new repository repos
 	 */
 	public static void setrepositoryRepos(ArrayList<Repository> reps) {
 		repositoryRepos = reps;
@@ -73,7 +71,8 @@ public class GitRepoBuilder {
 	/**
 	 * Sets the repository gits.
 	 *
-	 * @param gits the new repository gits
+	 * @param gits
+	 *            the new repository gits
 	 */
 	public static void setrepositoryGits(ArrayList<Git> gits) {
 		repositoryGits = gits;
@@ -82,15 +81,15 @@ public class GitRepoBuilder {
 	/**
 	 * The main method.
 	 *
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
 		init();
 	}
 
 	/**
-	 * Inits the local repositories.
-	 * Note that this is not init in the Git sense
+	 * Inits the local repositories. Note that this is not init in the Git sense
 	 */
 	/*
 	 * Idealy this should only be run once, then the user can decide to re-use
@@ -98,15 +97,13 @@ public class GitRepoBuilder {
 	 * repos under directory and builds different representations.
 	 */
 	public static void init() {
-		
-	 repositoryStrings = new ArrayList<String>();
-		
-	 repositoryRepos = new ArrayList<Repository>();
-		
-	 repositoryGits = new ArrayList<Git>();
 
-		
-		
+		repositoryStrings = new ArrayList<String>();
+
+		repositoryRepos = new ArrayList<Repository>();
+
+		repositoryGits = new ArrayList<Git>();
+
 		FileWalker fw = new FileWalker();
 		fw.searchDirectory(new File(Core.getSearchRoot()), ".git");
 		repositoryStrings = fw.getResult();
@@ -116,12 +113,12 @@ public class GitRepoBuilder {
 				Repository r = new FileRepository(s);
 				repositoryRepos.add(r);
 
-				//System.out.println("Reached repo list addition");
+				// System.out.println("Reached repo list addition");
 
 				Git g = new Git(r);
 				repositoryGits.add(g);
 
-				//System.out.println("Reached git list addition");
+				// System.out.println("Reached git list addition");
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -145,8 +142,7 @@ public class GitRepoBuilder {
 		Path current = Paths.get("");
 		File f = new File(current.toAbsolutePath().toString() + "SHEPHERD.txt");
 
-		stringCacheLocation = current.toAbsolutePath().toString()
-				+ "SHEPHERD.txt";
+		stringCacheLocation = current.toAbsolutePath().toString() + "SHEPHERD.txt";
 
 		try {
 			PrintWriter writer = new PrintWriter(f);
@@ -163,7 +159,8 @@ public class GitRepoBuilder {
 	/**
 	 * Cache strings.
 	 *
-	 * @param location The location to cache to
+	 * @param location
+	 *            The location to cache to
 	 */
 	public static void cacheStrings(String location) {
 		if (repositoryStrings.isEmpty())
@@ -195,8 +192,7 @@ public class GitRepoBuilder {
 	 */
 	public static void readInputStrings() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(
-					stringCacheLocation));
+			BufferedReader br = new BufferedReader(new FileReader(stringCacheLocation));
 
 			repositoryStrings.clear();
 
@@ -216,7 +212,8 @@ public class GitRepoBuilder {
 	/**
 	 * Read input strings from cache.
 	 *
-	 * @param location The cache location
+	 * @param location
+	 *            The cache location
 	 */
 	public static void readInputStrings(String location) {
 		try {
@@ -240,12 +237,12 @@ public class GitRepoBuilder {
 	/**
 	 * Read input strings.
 	 *
-	 * @param append Whether or not we use the append option
+	 * @param append
+	 *            Whether or not we use the append option
 	 */
 	public static void readInputStrings(boolean append) {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(
-					stringCacheLocation));
+			BufferedReader br = new BufferedReader(new FileReader(stringCacheLocation));
 			if (!append)
 				repositoryStrings.clear();
 
@@ -266,8 +263,10 @@ public class GitRepoBuilder {
 	/**
 	 * Read input strings.
 	 *
-	 * @param location the location
-	 * @param append Whether or not we append
+	 * @param location
+	 *            the location
+	 * @param append
+	 *            Whether or not we append
 	 */
 	public static void readInputStrings(String location, boolean append) {
 		try {

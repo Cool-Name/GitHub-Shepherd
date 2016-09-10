@@ -18,7 +18,10 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
+import com.sun.javafx.geom.PathConsumer2D;
+
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -44,6 +47,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class MyController implements Initializable {
 
@@ -80,15 +84,25 @@ public class MyController implements Initializable {
 	StackPane TableStackPane;
 	@FXML
 	Label progressText;
+	@FXML
+	Label statusText;
+	@FXML
+	Label statusTitleText;
+	@FXML
+	Label directoryText;
+	@FXML
+	Label directoryTitleText;
 
 	// sets format for last modified column
 	final String dateFormat = "dd/MM/yyyy hh:mm a";
-	int activeItems = 0;
+	int activeRepos = 0;
+	int totalRepos = 0;
+	String currentDirectory = Core.getSearchRoot();
 	static AtomicInteger finishedThreads = new AtomicInteger(0);
+	static AtomicInteger scannedRepos = new AtomicInteger(0);
 	static boolean processing = false;
 
 	TreeItem<String> root;
-
 	ObservableList<Row> observableList = FXCollections.observableArrayList();
 
 	// this code is run on startup
@@ -110,6 +124,9 @@ public class MyController implements Initializable {
 
 		// sets size of progress indicator
 		progressCircle.setMaxSize(300, 300);
+
+		// updates bottom status bar
+		updateStatus();
 	}
 
 	// changes row of check boxes to match state of header check box
@@ -118,7 +135,8 @@ public class MyController implements Initializable {
 		for (Row item : observableList) {
 			item.setEnabled(((CheckBox) e.getSource()).isSelected());
 		}
-
+		// updates bottom status bar
+		updateStatus();
 	}
 
 	// creates table rows and builds an observable list
@@ -215,6 +233,16 @@ public class MyController implements Initializable {
 		}
 	}
 
+	// updates the bottom status Bar
+	private void updateStatus() {
+		setActiveRows();
+
+		statusTitleText.setText("Selected Repos:");
+		statusText.setText(activeRepos + " / " + totalRepos);
+		directoryTitleText.setText("Directory:");
+		directoryText.setText(currentDirectory);
+	}
+
 	// modifies the git date string to a recogniseable state
 	private String modifyDateLayout(String inputDate) throws ParseException {
 		Date date = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy").parse(inputDate);
@@ -234,10 +262,14 @@ public class MyController implements Initializable {
 			File defaultDirectory = new File(Core.getSearchRoot());
 			chooser.setInitialDirectory(defaultDirectory);
 			File selectedDirectory = chooser.showDialog(new Stage());
+			currentDirectory = selectedDirectory.getAbsolutePath();
 			Core.setSearchRoot(selectedDirectory.toString());
 		} catch (Exception e) {
 			System.err.println("There was a problem choosing that directory");
 		}
+
+		// updates bottom status bar
+		updateStatus();
 	}
 
 	@FXML
@@ -245,15 +277,27 @@ public class MyController implements Initializable {
 
 		if (!processing) {
 			processing = true;
-			Task task = new Task<Void>() {
+			Task<Void> task = new Task<Void>() {
 				@Override
 				public Void call() {
 
+					updateMessage("Searching");
+
 					GitRepoBuilder.init();
+
+					updateMessage("Building");
 					buildList();
 
 					enabled.setCellValueFactory(param -> param.getValue().enabledProperty());
-					enabled.setCellFactory(CheckBoxTableCell.forTableColumn(enabled));
+					enabled.setCellFactory(
+							CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
+								@Override
+								public ObservableValue<Boolean> call(Integer param) {
+									updateStatus();
+									return observableList.get(param).enabledProperty();
+								}
+							}));
+
 					repositories.setCellValueFactory(new PropertyValueFactory<Row, String>("repositories"));
 					current_version.setCellValueFactory(new PropertyValueFactory<Row, String>("current_version"));
 					latest_version.setCellValueFactory(new PropertyValueFactory<Row, String>("latest_version"));
@@ -266,7 +310,7 @@ public class MyController implements Initializable {
 							SimpleDateFormat format = new SimpleDateFormat(dateFormat);
 							Date d1;
 							Date d2;
-							
+
 							try {
 								d1 = format.parse(t);
 							} catch (Exception e) {
@@ -292,17 +336,35 @@ public class MyController implements Initializable {
 
 			// progress indicator runs while task is running
 			progressCircle.visibleProperty().bind(task.runningProperty());
+			progressText.textProperty().bind(task.messageProperty());
+			progressText.visibleProperty().bind(task.runningProperty());
 			TableStackPane.setEffect(new GaussianBlur());
 
-			new Thread(task).start();
+			Thread t = new Thread(task);
+			t.setDaemon(true);
+			t.start();
 
 			task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				@Override
 				public void handle(WorkerStateEvent t) {
+					// populates table
 					data_table.setItems(observableList);
+
+					// updates bottom status bar
+					updateStatus();
+
 					// removes blur effect
 					TableStackPane.setEffect(null);
+
+					// resets flag
 					processing = false;
+
+					if (observableList.size() == 0) {
+						data_table.setPlaceholder(new Label("No repos found... Try a different directory."));
+					} else {
+						data_table.setPlaceholder(new Label(""));
+					}
+
 				}
 			});
 		}
@@ -310,86 +372,95 @@ public class MyController implements Initializable {
 
 	@FXML
 	private void ShowContextMenu() {
-
+		updateStatus();
 	}
 
 	@FXML
 	private void pullSelectedRepos() throws InterruptedException {
 		if (!processing) {
 			if (observableList.size() == 0) {
-				data_table.setPlaceholder(new Label("Scan directory before pulling"));
-			}
+				data_table.setPlaceholder(new Label("List repos before pulling"));
+			} else {
+				data_table.setPlaceholder(new Label(""));
+				processing = true;
 
-			processing = true;
-			Task<Void> task = new Task<Void>() {
-				@Override
-				public Void call() throws InterruptedException {
+				Task<Void> task = new Task<Void>() {
+					@Override
+					public Void call() throws InterruptedException {
 
-					// pulls all repos that have a checkbox next to them
-					Puller p = new Puller();
+						// pulls all repos that have a checkbox next to them
+						Puller p = new Puller();
 
-					List<PullThread> threads = new ArrayList<PullThread>();
+						List<PullThread> threads = new ArrayList<PullThread>();
 
-					finishedThreads = new AtomicInteger(0);
-					for (Row r : observableList) {
-						if (r.getEnabled() == true) {
-							PullThread pt = new PullThread(r.getGit());
+						finishedThreads = new AtomicInteger(0);
+						for (Row r : observableList) {
+							if (r.getEnabled() == true) {
+								PullThread pt = new PullThread(r.getGit());
+								pt.setDaemon(true);
+								pt.start();
 
-							pt.start();
-
-							threads.add(pt);
-						} else {
-							r.setEnabled(false);
+								threads.add(pt);
+							} else {
+								r.setEnabled(false);
+							}
 						}
+
+						setActiveRows();
+						while (finishedThreads.get() < activeRepos) {
+							updateMessage(finishedThreads.get() + " / " + activeRepos);
+						}
+						updateMessage(finishedThreads.get() + " / " + activeRepos);
+
+						// waits for threads to finish
+						for (int i = 0; i < threads.size(); i++) {
+							threads.get(i).join();
+						}
+
+						return null;
 					}
+				};
 
-					setActiveRows();
-					while (finishedThreads.get() < activeItems) {
-						updateMessage(finishedThreads.get() + " / " + activeItems);
+				// progress indicator runs while task is running
+				progressCircle.visibleProperty().bind(task.runningProperty());
+				progressText.visibleProperty().bind(task.runningProperty());
+				progressText.textProperty().bind(task.messageProperty());
+				TableStackPane.setEffect(new GaussianBlur());
+
+				Thread t = new Thread(task);
+				t.setDaemon(true);
+				t.start();
+
+				task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+					@Override
+					public void handle(WorkerStateEvent t) {
+
+						// updates the new list
+						buildList();
+
+						// sets the list
+						data_table.setItems(observableList);
+
+						// updates bottom status bar
+						updateStatus();
+
+						// removes blur effect
+						TableStackPane.setEffect(null);
+						processing = false;
 					}
-
-					updateMessage(finishedThreads.get() + " / " + activeItems);
-					// waits for threads to finish
-					for (int i = 0; i < threads.size(); i++) {
-						threads.get(i).join();
-					}
-
-					return null;
-				}
-			};
-
-			// progress indicator runs while task is running
-			progressCircle.visibleProperty().bind(task.runningProperty());
-			progressText.visibleProperty().bind(task.runningProperty());
-			progressText.textProperty().bind(task.messageProperty());
-			TableStackPane.setEffect(new GaussianBlur());
-
-			new Thread(task).start();
-
-			task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-				@Override
-				public void handle(WorkerStateEvent t) {
-
-					// updates the new list
-					buildList();
-
-					// sets the list
-					data_table.setItems(observableList);
-
-					// removes blur effect
-					TableStackPane.setEffect(null);
-					processing = false;
-				}
-			});
+				});
+			}
 		}
 	}
 
 	public void setActiveRows() {
-		activeItems = 0;
+		activeRepos = 0;
+		totalRepos = 0;
 		for (Row r : observableList) {
 			if (r.getEnabled() == true) {
-				activeItems++;
+				activeRepos++;
 			}
+			totalRepos++;
 		}
 	}
 

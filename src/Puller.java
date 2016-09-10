@@ -7,9 +7,7 @@ import org.eclipse.jgit.lib.Repository;
 // TODO: Auto-generated Javadoc
 
 /**
- * The Class Puller.
- * Automatically pulls to update local
- * git repositories.
+ * The Class Puller. Automatically pulls to update local git repositories.
  */
 public class Puller {
 
@@ -18,14 +16,15 @@ public class Puller {
 
 	/** The repositories returned by the file walker. */
 	private ArrayList<Repository> repos;
-	
+
 	/** The git objects returned by the file walker. */
 	private ArrayList<Git> gits;
 
 	/**
 	 * The main method.
 	 *
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
 		GitRepoBuilder.init();
@@ -36,21 +35,17 @@ public class Puller {
 	}
 
 	/**
-	 * Instantiates a new puller.
-	 * Hunts down local repositories using the file walker
-	 * and sets up a puller for them.
+	 * Instantiates a new puller. Hunts down local repositories using the file
+	 * walker and sets up a puller for them.
 	 */
 	public Puller() {
 		// Make sure we haven't called prematurely
-		if (GitRepoBuilder.getrepositoryGits() == null
-				|| GitRepoBuilder.getrepositoryRepos() == null) {
-			System.out
-					.println("Likely that program has not been initialized. Closing!");
+		if (GitRepoBuilder.getrepositoryGits() == null || GitRepoBuilder.getrepositoryRepos() == null) {
+			System.out.println("Likely that program has not been initialized. Closing!");
 			return;
 		}
 		// Make sure repos exist
-		if (!GitRepoBuilder.getrepositoryGits().isEmpty()
-				&& !GitRepoBuilder.getrepositoryRepos().isEmpty()) {
+		if (!GitRepoBuilder.getrepositoryGits().isEmpty() && !GitRepoBuilder.getrepositoryRepos().isEmpty()) {
 			gits = GitRepoBuilder.getrepositoryGits();
 			repos = GitRepoBuilder.getrepositoryRepos();
 		}
@@ -71,8 +66,7 @@ public class Puller {
 	}
 
 	/**
-	 * Pull all.
-	 * Pulls all repositories to update them.
+	 * Pull all. Pulls all repositories to update them.
 	 */
 	// Basically just calls a pull command for each git object
 	public void pullAll() {
@@ -85,7 +79,8 @@ public class Puller {
 	/**
 	 * Pull single.
 	 *
-	 * @param g the g
+	 * @param g
+	 *            the g
 	 */
 	public static void pullSingle(Git g) {
 		try {
@@ -104,7 +99,8 @@ public class Puller {
 	/**
 	 * Pull single.
 	 *
-	 * @param s The string representing the it directory location
+	 * @param s
+	 *            The string representing the it directory location
 	 */
 	public static void pullSingle(String s) {
 		try {

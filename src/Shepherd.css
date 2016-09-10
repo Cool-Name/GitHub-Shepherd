@@ -1,0 +1,38 @@
+/*.button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+} */
+ 
+#statusTitleText, #statusText, #directoryTitleText, #directoryText
+{
+    -fx-text-fill: black;
+   	-fx-font-size: 16.0;
+}
+
+#statusTitleText{
+			  /*T R B L*/
+	-fx-padding:3.0 3.0 3.0 10.0px;
+	-fx-font-weight: bold;
+}
+
+#statusText
+{
+			  /*T R B L*/	
+	-fx-padding:3.0 3.0 3.0 15.0px;
+}
+
+#directoryTitleText
+{
+			  /*T R B L*/	
+	-fx-padding:3.0 0.0 3.0 0.0px;
+	-fx-font-weight: bold;
+}
+
+#directoryText
+{
+			  /*T R B L*/	
+	-fx-padding:3.0 3.0 3.0 15.0px;
+}

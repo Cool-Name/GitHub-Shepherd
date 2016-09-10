@@ -6,8 +6,8 @@ import java.util.ArrayList;
  * The Class FileWalker.
  */
 /*
- * Does a recursive search though directories
- * looking for specified sub-directory
+ * Does a recursive search though directories looking for specified
+ * sub-directory
  * 
  */
 public class FileWalker {
@@ -18,7 +18,7 @@ public class FileWalker {
 	/** The result. */
 	// Store results
 	private ArrayList<String> result = new ArrayList<String>();
-	
+
 	/** The result files. */
 	private ArrayList<File> resultFiles = new ArrayList<File>();
 
@@ -34,7 +34,8 @@ public class FileWalker {
 	/**
 	 * Sets the file name to search.
 	 *
-	 * @param fileNameToSearch the new file name to search
+	 * @param fileNameToSearch
+	 *            the new file name to search
 	 */
 	public void setFileNameToSearch(String fileNameToSearch) {
 		this.fileNameToSearch = fileNameToSearch;
@@ -61,14 +62,14 @@ public class FileWalker {
 	/**
 	 * The main method.
 	 *
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
 
 		FileWalker fileSearch = new FileWalker();
 
-		fileSearch
-				.searchDirectory(new File("C:/Users/Hakau/Documents"), ".git");
+		fileSearch.searchDirectory(new File("C:/Users/Hakau/Documents"), ".git");
 
 		int count = fileSearch.getResult().size();
 		if (count == 0) {
@@ -84,8 +85,10 @@ public class FileWalker {
 	/**
 	 * Search directory.
 	 *
-	 * @param directory the directory
-	 * @param fileNameToSearch the file name to search
+	 * @param directory
+	 *            the directory
+	 * @param fileNameToSearch
+	 *            the file name to search
 	 */
 	public void searchDirectory(File directory, String fileNameToSearch) {
 
@@ -95,8 +98,7 @@ public class FileWalker {
 			System.out.println("Searching: " + directory);
 			search(directory);
 		} else {
-			System.out.println(directory.getAbsoluteFile()
-					+ " is not a directory!");
+			System.out.println(directory.getAbsoluteFile() + " is not a directory!");
 		}
 
 	}
@@ -104,13 +106,13 @@ public class FileWalker {
 	/**
 	 * Search.
 	 *
-	 * @param file The file to search
+	 * @param file
+	 *            The file to search
 	 */
 	private void search(File file) {
 
 		if (file.isDirectory()) {
-			System.out.println("Searching directory ... "
-					+ file.getAbsoluteFile());
+			System.out.println("Searching directory ... " + file.getAbsoluteFile());
 
 			// Check read permissions and not at end of tree
 			if (file.canRead() && file.listFiles() != null) {
@@ -119,8 +121,7 @@ public class FileWalker {
 					// We have no reason to deal with files atm
 					// so only act on directories
 					if (temp.isDirectory()) {
-						if (getFileNameToSearch().toLowerCase().equals(
-								temp.getName().toLowerCase())) {
+						if (getFileNameToSearch().toLowerCase().equals(temp.getName().toLowerCase())) {
 							result.add(temp.getAbsoluteFile().toString());
 							resultFiles.add(temp.getAbsoluteFile());
 						} else
@@ -129,8 +130,7 @@ public class FileWalker {
 				}
 
 			} else {
-				System.out.println(file.getAbsoluteFile()
-						+ " Permission Denied");
+				System.out.println(file.getAbsoluteFile() + " Permission Denied");
 			}
 		}
 
