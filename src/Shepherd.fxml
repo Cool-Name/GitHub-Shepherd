@@ -93,10 +93,10 @@
 									prefHeight="683.0" prefWidth="1300.0">
 
 									<columns>
-										<TableColumn fx:id="enabled" maxWidth="50.0"
-											minWidth="26.0" prefWidth="32.0" resizable="false" sortable="false" />
+										<TableColumn fx:id="enabled" maxWidth="32"
+											minWidth="32.0" prefWidth="32.0" resizable="false" sortable="false" />
 										<TableColumn fx:id="repositories" maxWidth="1000.0"
-											minWidth="50.0" prefWidth="401.0" text="Repositories" />
+											minWidth="50.0" prefWidth="550.0" text="Repositories" />
 										<TableColumn fx:id="current_version" maxWidth="300.0"
 											minWidth="50.0" prefWidth="130.0" text="Current Version" />
 										<TableColumn fx:id="latest_version" maxWidth="300.0"
@@ -106,7 +106,7 @@
 										<TableColumn fx:id="hash" maxWidth="900.0"
 											minWidth="50.0" prefWidth="80" text="Hash" />
 										<TableColumn fx:id="description" maxWidth="1500.0"
-											minWidth="50.0" prefWidth="600.0" text="Description" />
+											minWidth="50.0" prefWidth="550" text="Description" />
 									</columns>
 
 								</TableView>
