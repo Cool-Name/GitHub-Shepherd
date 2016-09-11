@@ -117,7 +117,8 @@ public class Puller {
 
 class PullThread extends Thread {
 	private Git g;
-
+	public boolean success;
+	public Row row;
 	public PullThread(Git g) {
 		this.g = g;
 	}
@@ -127,10 +128,13 @@ class PullThread extends Thread {
 			g.pull().setCredentialsProvider(Core.getCreds()).call();
 			CommitHandler.printDifferencesToLast(g);
 			MyController.finishedThreads.incrementAndGet();
+			success = true;
 		} catch (TransportException e) {
 			System.out.println("Not allowed access to repository");
+			success = false;
 			MyController.finishedThreads.incrementAndGet();
 		} catch (Exception e) {
+			success = false;
 			MyController.finishedThreads.incrementAndGet();
 			e.printStackTrace();
 		}

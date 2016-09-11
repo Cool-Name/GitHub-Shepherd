@@ -15,10 +15,11 @@ public class Row {
 	private List<String> branches;
 	private String hash;
 	private String description;
+	private String url;
 	private Git g;
 
 	public Row(BooleanProperty _enabled, String _repositories, String _current_version, String _latest_version,
-			String _last_pulled, List<String> branches, String _hash, String _description, Git g) {
+			String _last_pulled, List<String> branches, String _hash, String _description, Git g, String _url) {
 		this.enabled = _enabled;
 		this.repositories = _repositories;
 		this.current_version = _current_version;
@@ -28,6 +29,15 @@ public class Row {
 		this.hash = _hash;
 		this.description = _description;
 		this.g = g;
+		this.url = _url;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public Git getGit() {

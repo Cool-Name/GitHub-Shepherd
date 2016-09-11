@@ -1,4 +1,8 @@
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,8 +22,6 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
-import com.sun.javafx.geom.PathConsumer2D;
-
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -36,6 +38,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -44,6 +47,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -73,7 +77,7 @@ public class MyController implements Initializable {
 	@FXML
 	TableColumn<Row, String> last_pulled;
 	@FXML
-	TableColumn<Row, Hyperlink> hash;
+	TableColumn<Row, String> hash;
 	@FXML
 	TableColumn<Row, String> description;
 	@FXML
@@ -104,6 +108,8 @@ public class MyController implements Initializable {
 
 	TreeItem<String> root;
 	ObservableList<Row> observableList = FXCollections.observableArrayList();
+
+	ObservableList<Row> state = FXCollections.observableArrayList();
 
 	// this code is run on startup
 	@Override
@@ -225,7 +231,7 @@ public class MyController implements Initializable {
 				// builds row
 				observableList.add(
 						new Row(new SimpleBooleanProperty(upToDate), g.getRepository().getDirectory().getAbsolutePath(),
-								tag, "", authorDate, branchNames, hashString, description, g));
+								tag, "", authorDate, branchNames, hashString, description, g, url));
 
 			} catch (Exception e) {
 				System.err.println("There was an error while creating the row");
@@ -274,7 +280,10 @@ public class MyController implements Initializable {
 
 	@FXML
 	private void ListRepos() {
-
+		
+		//clears text warnings from the table
+		data_table.setPlaceholder(new Label(""));
+		
 		if (!processing) {
 			processing = true;
 			Task<Void> task = new Task<Void>() {
@@ -327,7 +336,50 @@ public class MyController implements Initializable {
 						}
 					});
 
-					hash.setCellValueFactory(new PropertyValueFactory<Row, Hyperlink>("hash"));
+					hash.setCellValueFactory(new PropertyValueFactory<Row, String>("hash"));
+
+					// cell factory for click event on a hash cell
+					Callback<TableColumn<Row, String>, TableCell<Row, String>> cellFactory = new Callback<TableColumn<Row, String>, TableCell<Row, String>>() {
+						public TableCell call(TableColumn p) {
+							TableCell cell = new TableCell<Row, String>() {
+								@Override
+								public void updateItem(String item, boolean empty) {
+									super.updateItem(item, empty);
+									setGraphic(new Hyperlink(item));
+								}
+							};
+
+							// attaches mouse click event
+							cell.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+								@Override
+								public void handle(MouseEvent event) {
+									TableCell c = (TableCell) event.getSource();
+
+									// gets the row of the table clicked
+									Row r = observableList.get((c.getTableRow().getIndex()));
+
+									// filters out null values
+									if (r.getHash().trim() != "") {
+
+										// builds url for specific commit
+										String url = r.getUrl().substring(0, r.getUrl().length() - 4) + "/commit/"
+												+ r.getHash();
+										try {
+											// opens the url in the users
+											// default browser
+											Desktop.getDesktop().browse(new URI(url));
+										} catch (IOException | URISyntaxException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									}
+								}
+							});
+							return cell;
+						}
+					};
+
+					hash.setCellFactory(cellFactory);
 					description.setCellValueFactory(new PropertyValueFactory<Row, String>("description"));
 
 					return null;
@@ -389,7 +441,6 @@ public class MyController implements Initializable {
 					public Void call() throws InterruptedException {
 
 						// pulls all repos that have a checkbox next to them
-						Puller p = new Puller();
 
 						List<PullThread> threads = new ArrayList<PullThread>();
 
@@ -399,7 +450,7 @@ public class MyController implements Initializable {
 								PullThread pt = new PullThread(r.getGit());
 								pt.setDaemon(true);
 								pt.start();
-
+								pt.row = r;
 								threads.add(pt);
 							} else {
 								r.setEnabled(false);
@@ -408,13 +459,14 @@ public class MyController implements Initializable {
 
 						setActiveRows();
 						while (finishedThreads.get() < activeRepos) {
-							updateMessage(finishedThreads.get() + " / " + activeRepos);
+							updateMessage("Pulling\n" + finishedThreads.get() + " / " + activeRepos);
 						}
-						updateMessage(finishedThreads.get() + " / " + activeRepos);
+						updateMessage("Pulling\n" + finishedThreads.get() + " / " + activeRepos);
 
 						// waits for threads to finish
 						for (int i = 0; i < threads.size(); i++) {
 							threads.get(i).join();
+							state.add(threads.get(i).row);
 						}
 
 						return null;

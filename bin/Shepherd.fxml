@@ -72,7 +72,7 @@
 						</Button>
 						<Button contentDisplay="TOP" layoutX="278.0" layoutY="10.0"
 							mnemonicParsing="false" onAction="#pullSelectedRepos" prefHeight="81.0"
-							prefWidth="134.0" text="Pull">
+							prefWidth="134.0" text="Pull Selected">
 							<graphic>
 								<ImageView fitHeight="48.0" fitWidth="48.0"
 									pickOnBounds="true" preserveRatio="true">
@@ -104,7 +104,7 @@
 										<TableColumn fx:id="last_pulled" maxWidth="300.0"
 											minWidth="50.0" prefWidth="160.0" text="Date" />
 										<TableColumn fx:id="hash" maxWidth="900.0"
-											minWidth="50.0" prefWidth="100.0" text="Hash" />
+											minWidth="50.0" prefWidth="80" text="Hash" />
 										<TableColumn fx:id="description" maxWidth="1500.0"
 											minWidth="50.0" prefWidth="600.0" text="Description" />
 									</columns>

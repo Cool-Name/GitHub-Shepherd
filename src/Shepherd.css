@@ -6,6 +6,11 @@
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 } */
  
+.table-cell .hyperlink {
+ 	 /*http://stackoverflow.com/questions/33595335/javafx-hyperlink-in-selected-table-cell-css*/
+    -fx-text-fill: ladder(-fx-background, -fx-light-text-color 50%, -fx-accent 51% );
+}
+
 #statusTitleText, #statusText, #directoryTitleText, #directoryText
 {
     -fx-text-fill: black;
