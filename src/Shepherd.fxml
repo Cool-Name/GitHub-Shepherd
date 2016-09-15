@@ -77,7 +77,7 @@
 								<ImageView fitHeight="48.0" fitWidth="48.0"
 									pickOnBounds="true" preserveRatio="true">
 									<image>
-										<Image url="@images/server-upgrade.png" />
+										<Image url="@images/server-remove.png" />
 									</image>
 								</ImageView>
 							</graphic>

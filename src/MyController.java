@@ -7,20 +7,31 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.RefUpdate.Result;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.FetchResult;
+import org.eclipse.jgit.transport.TrackingRefUpdate;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
@@ -105,6 +116,7 @@ public class MyController implements Initializable {
 	static AtomicInteger finishedThreads = new AtomicInteger(0);
 	static AtomicInteger scannedRepos = new AtomicInteger(0);
 	static boolean processing = false;
+	static double startTime;
 
 	TreeItem<String> root;
 	ObservableList<Row> observableList = FXCollections.observableArrayList();
@@ -170,24 +182,15 @@ public class MyController implements Initializable {
 				boolean upToDate = true;
 
 				try {
-					tag = Git.wrap(g.getRepository()).describe().setTarget(ObjectId.fromString(head.getName())).call();
-				} catch (Exception e1) {
-					System.err.println("Tag not found: " + g.getRepository());
+					tag = g.describe().call();
+					Ref latestCommit = g.fetch().call().getAdvertisedRef(Constants.HEAD);
+					// gets the tag from the latest commit
+					latestTag = g.describe().setTarget(latestCommit.getObjectId().getName()).call();
+
+				} catch (Exception e) {
+					// TODO: handle exception
 				}
-
-				// try {
-				// Collection<Ref> refs = g.lsRemoteRepository().call();
-				//
-				// for (Ref ref : refs) {
-				// System.out.println("Ref: " + ref);
-				// }
-				//
-				// latestTag =
-				// Git.wrap(g.getRepository()).describe().setTarget(ObjectId.fromString(head.getName())).call();
-				// } catch (Exception e1) {
-				// System.err.println("Tag not found: " + g.getRepository());
-				// }
-
+				
 				try {
 
 					RevWalk revWalk = new RevWalk(g.getRepository());
@@ -221,6 +224,7 @@ public class MyController implements Initializable {
 					revWalk.close();
 
 				} catch (Exception e) {
+					// e.printStackTrace();
 					System.err.println("There was an error in the RevWalk: " + g.getRepository());
 				}
 
@@ -231,7 +235,7 @@ public class MyController implements Initializable {
 				// builds row
 				observableList.add(
 						new Row(new SimpleBooleanProperty(upToDate), g.getRepository().getDirectory().getAbsolutePath(),
-								tag, "", authorDate, branchNames, hashString, description, g, url));
+								tag, latestTag, authorDate, branchNames, hashString, description, g, url));
 
 			} catch (Exception e) {
 				System.err.println("There was an error while creating the row");
@@ -280,10 +284,10 @@ public class MyController implements Initializable {
 
 	@FXML
 	private void ListRepos() {
-		
-		//clears text warnings from the table
+		startTime = System.currentTimeMillis();
+		// clears text warnings from the table
 		data_table.setPlaceholder(new Label(""));
-		
+
 		if (!processing) {
 			processing = true;
 			Task<Void> task = new Task<Void>() {
@@ -416,7 +420,8 @@ public class MyController implements Initializable {
 					} else {
 						data_table.setPlaceholder(new Label(""));
 					}
-
+					double estimatedTime = System.currentTimeMillis() - startTime;
+					System.out.println(estimatedTime / 1000);
 				}
 			});
 		}
@@ -528,5 +533,31 @@ public class MyController implements Initializable {
 			// clears the text from the server textField
 			serverTextField.clear();
 		}
+	}
+
+	/**
+	 * @throws JGitInternalException
+	 *             upon internal failure
+	 * @return the tags available
+	 */
+	public List<RevTag> getTags(Repository repo) throws JGitInternalException {
+		Map<String, Ref> refList;
+		List<RevTag> tags = new ArrayList<RevTag>();
+		RevWalk revWalk = new RevWalk(repo);
+		try {
+			refList = repo.getRefDatabase().getRefs(Constants.R_TAGS);
+			for (Ref ref : refList.values()) {
+				RevTag tag = revWalk.parseTag(ref.getObjectId());
+				tags.add(tag);
+			}
+		} catch (IOException e) {
+			throw new JGitInternalException(e.getMessage(), e);
+		}
+		Collections.sort(tags, new Comparator<RevTag>() {
+			public int compare(RevTag o1, RevTag o2) {
+				return o1.getTagName().compareTo(o2.getTagName());
+			}
+		});
+		return tags;
 	}
 }
