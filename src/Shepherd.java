@@ -26,7 +26,7 @@ public class Shepherd extends Application {
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("images/logo.png")));
 
 		// sets title
-		stage.setTitle("Github Shepherd");
+		stage.setTitle("Git Shepherd");
 
 		// shows the stage
 		stage.setScene(scene);
