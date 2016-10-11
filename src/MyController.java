@@ -58,8 +58,10 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -72,9 +74,7 @@ public class MyController implements Initializable {
 	@FXML
 	Button addServer;
 	@FXML
-	TextField serverTextField;
-	@FXML
-	TreeView<String> serverList;
+	VBox ServerList;
 	@FXML
 	TableView<Row> data_table;
 	@FXML
@@ -126,10 +126,6 @@ public class MyController implements Initializable {
 	// this code is run on startup
 	@Override
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-		// adds the root item servers
-		root = new TreeItem<String>("Servers");
-		root.setExpanded(true);
-		serverList.setRoot(root);
 
 		// Places select all check box in header
 		CheckBox selectAll = new CheckBox();
@@ -143,6 +139,8 @@ public class MyController implements Initializable {
 		// sets size of progress indicator
 		progressCircle.setMaxSize(300, 300);
 
+
+		
 		// updates bottom status bar
 		updateStatus();
 	}
@@ -523,16 +521,8 @@ public class MyController implements Initializable {
 
 	@FXML
 	private void AddServer() {
-		// checks if the search box is empty
-		if (serverTextField.getText() != null && !serverTextField.getText().isEmpty()) {
-			// adds the server to the server list
-			TreeItem<String> item = new TreeItem<>(serverTextField.getText());
-			root.getChildren().add(item);
-			serverList.setRoot(root);
-
-			// clears the text from the server textField
-			serverTextField.clear();
-		}
+		ServerCard server = new ServerCard("192.168.1.1","Production","Working",new Image("images/server.png"));
+		ServerList.getChildren().add(server);
 	}
 
 	/**
