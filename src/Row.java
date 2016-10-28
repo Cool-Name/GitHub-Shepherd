@@ -4,6 +4,7 @@ import org.eclipse.jgit.api.Git;
 
 import javafx.beans.property.BooleanProperty;
 
+// Represents an enrty in the table
 public class Row {
 
 	private BooleanProperty enabled;

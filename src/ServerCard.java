@@ -91,6 +91,7 @@ public class ServerCard extends VBox {
 
 			StringBuilder repoString = new StringBuilder();
 
+			// Repos to send
 			ObservableList<Row> repos = MyController.getRepos();
 			for (Row repoRow : repos) {
 				if (repoRow.getEnabled()) {
