@@ -94,6 +94,8 @@ public class MyController implements Initializable {
 	@FXML
 	MenuItem fileChangeDirectory;
 	@FXML
+	MenuItem fileClose;
+	@FXML
 	ProgressIndicator progressCircle;
 	@FXML
 	StackPane TableStackPane;
@@ -139,8 +141,6 @@ public class MyController implements Initializable {
 		// sets size of progress indicator
 		progressCircle.setMaxSize(300, 300);
 
-
-		
 		// updates bottom status bar
 		updateStatus();
 	}
@@ -188,7 +188,7 @@ public class MyController implements Initializable {
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
-				
+
 				try {
 
 					RevWalk revWalk = new RevWalk(g.getRepository());
@@ -239,6 +239,16 @@ public class MyController implements Initializable {
 				System.err.println("There was an error while creating the row");
 			}
 		}
+	}
+	
+	@FXML
+	public void close()
+	{
+	    // get a handle to the stage
+	    Stage stage = (Stage) addServer.getScene().getWindow();
+	    // do what you have to do
+	    stage.close();
+		
 	}
 
 	// updates the bottom status Bar
@@ -521,33 +531,8 @@ public class MyController implements Initializable {
 
 	@FXML
 	private void AddServer() {
-		ServerCard server = new ServerCard("192.168.1.1","Production","Working",new Image("images/server.png"));
+		ServerCard server = new ServerCard("192.168.1.1", "Production", "Working", new Image("images/server.png"));
 		ServerList.getChildren().add(server);
 	}
 
-	/**
-	 * @throws JGitInternalException
-	 *             upon internal failure
-	 * @return the tags available
-	 */
-	public List<RevTag> getTags(Repository repo) throws JGitInternalException {
-		Map<String, Ref> refList;
-		List<RevTag> tags = new ArrayList<RevTag>();
-		RevWalk revWalk = new RevWalk(repo);
-		try {
-			refList = repo.getRefDatabase().getRefs(Constants.R_TAGS);
-			for (Ref ref : refList.values()) {
-				RevTag tag = revWalk.parseTag(ref.getObjectId());
-				tags.add(tag);
-			}
-		} catch (IOException e) {
-			throw new JGitInternalException(e.getMessage(), e);
-		}
-		Collections.sort(tags, new Comparator<RevTag>() {
-			public int compare(RevTag o1, RevTag o2) {
-				return o1.getTagName().compareTo(o2.getTagName());
-			}
-		});
-		return tags;
-	}
 }

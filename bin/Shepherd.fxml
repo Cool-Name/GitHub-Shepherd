@@ -6,10 +6,9 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -19,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="1400.0" stylesheets="@Shepherd.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MyController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="1400.0" stylesheets="@Shepherd.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MyController">
 	<top>
 		<VBox prefHeight="21.0" prefWidth="1400.0" BorderPane.alignment="CENTER">
 			<children>
@@ -28,12 +27,13 @@
 						<Menu mnemonicParsing="false" text="File">
 							<items>
 								<MenuItem fx:id="fileChangeDirectory" mnemonicParsing="false" onAction="#setRootDirectory" text="Select Directory" />
+								<MenuItem fx:id="fileClose" mnemonicParsing="false" onAction="#close" text="Close" />
 							</items>
 						</Menu>
 					</menus>
 				</MenuBar>
 			</children>
-		</VBox>
+		</VBox> 
 	</top>
 	<center>
 		<VBox prefHeight="704.0" prefWidth="315.0" BorderPane.alignment="CENTER">
@@ -134,9 +134,9 @@
 	<left>
 		<VBox prefHeight="768.0" prefWidth="272.0">
 			<children>
-				<HBox prefHeight="42.0" prefWidth="272.0" VBox.vgrow="NEVER">
+				<HBox prefHeight="42.0" prefWidth="272.0">
 					<children>
-						<Button fx:id="addServer" mnemonicParsing="false" onAction="#AddServer" prefHeight="42.0" prefWidth="42.0" HBox.hgrow="NEVER">
+      						<Button fx:id="addServer" mnemonicParsing="false" onAction="#AddServer" prefHeight="42.0" prefWidth="347.0" text="Add Server" HBox.hgrow="NEVER">
 							<graphic>
 								<ImageView>
 									<image>
@@ -144,11 +144,14 @@
 									</image>
 								</ImageView>
 							</graphic>
-						</Button>
-						<TextField fx:id="serverTextField" onAction="#AddServer" prefHeight="42.0" prefWidth="228.0" HBox.hgrow="NEVER" />
+      						</Button>
 					</children>
 				</HBox>
-				<TreeView fx:id="serverList" onContextMenuRequested="#ShowContextMenu" VBox.vgrow="ALWAYS" />
+            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox fx:id="ServerList" />
+               </content>
+            </ScrollPane>
 			</children>
 		</VBox>
 	</left>
