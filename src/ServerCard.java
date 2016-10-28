@@ -99,7 +99,7 @@ public class ServerCard extends VBox {
 						Git g = new Git(new FileRepository(
 								repoRow.getRepositories()));
 						String url = repoRow.getUrl();
-						repoString.append(url + "&&");
+						repoString.append(url + ",,");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

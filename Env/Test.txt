@@ -1,3 +1,0 @@
-Test
-~T2
-https://github.com/Cool-Name/Database-Scripts.git
