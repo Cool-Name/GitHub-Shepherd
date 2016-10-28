@@ -13,12 +13,10 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
  */
 /*
  * Class that handles the main running of the program,
- * including interaction with the gui. Much to do here.
+ * including interaction with the gui
  * 
  */
 public class Core {
-
-	// NOTE : CHANGE THESE
 
 	/** The search root. */
 	// The main directory the program will operate on.
@@ -27,7 +25,7 @@ public class Core {
 	private static ArrayList<Git> repos;
 
 	/** The credential provider. */
-	// Credentials used to access Github
+	// Credentials used to access Github - deprecated as client really only cares about public, may add in future
 	private static CredentialsProvider cp = new UsernamePasswordCredentialsProvider(
 			"user", "password");
 

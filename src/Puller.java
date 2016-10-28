@@ -89,10 +89,6 @@ public class Puller {
 			System.out.println("Not allowed access to repository");
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Panda");
-			PopupBox.setTitle("Exception");
-			PopupBox.setMessage(e.toString());
-			PopupBox.main(new String[0]);
 		}
 	}
 

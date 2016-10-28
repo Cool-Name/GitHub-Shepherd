@@ -37,7 +37,7 @@
             </Label>
             <Label fx:id="textStatus" text="Status" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <font>
-                  <Font size="20.0" />
+                  <Font size="12.0" />
                </font>
             </Label>
          </children>

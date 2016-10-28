@@ -16,7 +16,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class testing.
+ * The Class testing. No longer relevant. We just used this to check JGit functionality as we went
  */
 public class testing {
 

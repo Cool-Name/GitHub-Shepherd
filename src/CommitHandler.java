@@ -154,8 +154,8 @@ public class CommitHandler {
 
 	public static void printDifferencesToLast(Git g) {
 
-		try {																// SUPER IMPORTANT
-			ObjectId oldHead = g.getRepository().resolve("HEAD^^{tree}");	// TODO: Make a tree searcher to detect depth of old commit (i.e. how many ^'s)
+		try {															
+			ObjectId oldHead = g.getRepository().resolve("HEAD^^{tree}");
 			ObjectId head = g.getRepository().resolve("HEAD^{tree}");
 
 			ObjectReader reader = g.getRepository().newObjectReader();
